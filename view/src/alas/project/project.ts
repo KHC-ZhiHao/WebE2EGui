@@ -2,12 +2,16 @@
 // import fsx from 'fs-extra'
 import { v4 as uuidv4 } from 'uuid'
 import { IModelOptions, IModel, IList } from 'alas'
+import { mkdir, rmdir, write } from '@/requests'
+import { getConfig } from '@/utils'
 
 import * as Spec from './spec'
 import * as Group from './group'
 import * as Variables from './variable'
 import * as CustomBtns from './customBtn'
 import * as Dependencies from './dependencie'
+
+const config = getConfig()
 
 export type Output = {
     id: string
@@ -35,10 +39,14 @@ export interface Model extends IModel {
     $v: {
         tag: 'project'
         output: Output
-        lockDependencies: ['request-promise']
+        lockDependencies: string[]
+        projectPath: string
     }
     $m: {
-        isLockDependencies: () => boolean
+        isLockDependencies: (dependencie: string) => boolean
+    }
+    $o: {
+
     }
 }
 
@@ -94,8 +102,8 @@ export const Options: IModelOptions<Model, List> = {
                 dependencies: self.dependencies.v.output
             }
         },
-        filepath(self) {
-            return `${projectDir}/${self.name}.json`
+        projectPath(self) {
+            return `${config.projectDir}/${self.name}.json`
         },
         lockDependencies() {
             return ['request-promise']
@@ -105,11 +113,31 @@ export const Options: IModelOptions<Model, List> = {
         isLockDependencies(self, dependencie) {
             return self.$v.lockDependencies.includes(dependencie)
         },
+        validate(self) {
+            let output = []
+            let templates = []
+            self.specs.forEach(sprite => {
+                templates = templates.concat(sprite.$v.templates)
+            })
+            for (let template of templates) {
+                let result = core.templates[template.name].validate(template.props)
+                if (result !== true) {
+                    output.push({
+                        result,
+                        template
+                    })
+                }
+            }
+            return output
+        }
+    },
+    loaders: {
         save(self) {
             if (self.$isChange()) {
                 self.updatedAt = Date.now()
             }
-            fs.writeFileSync(self.$v.filepath, JSON.stringify(self.$v.output, null, 4))
+            save()
+            
         },
         write(self, ids) {
             fsx.removeSync(outputDir)
@@ -146,23 +174,6 @@ export const Options: IModelOptions<Model, List> = {
                 }
                 fs.writeFileSync(`${outputDir}/${model.name}.js`, model.$v.write)
             })
-        },
-        validate(self) {
-            let output = []
-            let templates = []
-            self.specs.forEach(sprite => {
-                templates = templates.concat(sprite.$v.templates)
-            })
-            for (let template of templates) {
-                let result = core.templates[template.name].validate(template.props)
-                if (result !== true) {
-                    output.push({
-                        result,
-                        template
-                    })
-                }
-            }
-            return output
         }
     }
 }

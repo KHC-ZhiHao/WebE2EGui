@@ -1,4 +1,9 @@
+import config from '../../config.json'
 import { IList } from 'alas'
+
+export function getConfig() {
+    return config
+}
 
 export function copy(text: string) {
     var textarea = document.createElement('textarea')

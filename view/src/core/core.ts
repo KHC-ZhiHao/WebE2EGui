@@ -1,9 +1,7 @@
 class Core {
-    constructor() {
-        this.templates = {}
-        this.types = ['action', 'system', 'verify', 'engineer', 'custom']
-        this.propTypes = ['text', 'radio-group', 'javascript']
-    }
+    templates: { [key: string]: any } = {}
+    types = ['action', 'system', 'verify', 'engineer', 'custom']
+    propTypes = ['text', 'radio-group', 'javascript']
 
     reloadCustom(project) {
         this.clearCustom()
