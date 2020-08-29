@@ -1,3 +1,4 @@
+let jsBeautify = require('js-beautify')
 let fs = require('fs')
 let fsx = require('fs-extra')
 let config = require('../config.json')
@@ -33,6 +34,16 @@ app.post('/rmdir', function(req, res) {
 app.post('./write', function(req, res) {
     let { path, content } = req.body
     fs.writeFileSync(path, content)
+    res.send()
+})
+
+app.post('./write', function(req, res) {
+    let { path, content, beautify } = req.body
+    if (beautify) {
+        fs.writeFileSync(path, jsBeautify(content, { indent_size: 4 }))
+    } else {
+        fs.writeFileSync(path, content)
+    }
     res.send()
 })
 

@@ -24,6 +24,6 @@ export async function rmdir(name: string) {
     await axios.post('rmdir', { name })
 }
 
-export async function write(path: string, content: string) {
-    await axios.post('write', { path, content })
+export async function write(path: string, content: string, beautify: boolean = false) {
+    await axios.post('write', { path, content, beautify })
 }

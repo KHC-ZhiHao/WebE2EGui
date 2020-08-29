@@ -71,7 +71,7 @@ class Core {
         }
     }
 
-    verify(data, validates) {
+    verify(data, validates): any {
         let newData = {}
         for (let key in validates) {
             let target = data[key]

@@ -1,4 +1,3 @@
-import beautify from 'js-beautify'
 import * as Step from './step'
 import * as Template from './template'
 import { v4 as uuidv4 } from 'uuid'
@@ -84,7 +83,7 @@ export const Options: IModelOptions<Model, List> = {
         },
         write(self) {
             let steps = self.$v.steps
-            return beautify.js(`
+            return `
                 const store = {}
                 describe('${self.name}', function() {
                     beforeAll(async () => {
@@ -104,7 +103,7 @@ export const Options: IModelOptions<Model, List> = {
                         console.log('執行完畢')
                     })
                 })
-            `, { indent_size: 4 })
+            `
         },
         output(self) {
             if (self.$isChange()) {

@@ -1,8 +1,9 @@
 // import fs from 'fs'
 // import fsx from 'fs-extra'
+import core from '@/core'
 import { v4 as uuidv4 } from 'uuid'
-import { IModelOptions, IModel, IList } from 'alas'
-import { mkdir, rmdir, write } from '@/requests'
+import { IModelOptions, IModel, IList, ILoader } from 'alas'
+import { mkdir, rmdir, write, read } from '@/requests'
 import { getConfig } from '@/utils'
 
 import * as Spec from './spec'
@@ -44,9 +45,14 @@ export interface Model extends IModel {
     }
     $m: {
         isLockDependencies: (dependencie: string) => boolean
+        validate: () => any
     }
     $o: {
-
+        fetch: ILoader<void, { name: string }>
+        save: ILoader<void, void>
+        write: ILoader<void, {
+            specs?: string[]
+        } | undefined>
     }
 }
 
@@ -132,19 +138,23 @@ export const Options: IModelOptions<Model, List> = {
         }
     },
     loaders: {
-        save(self) {
+        async fetch(self, done, fail, { name }) {
+            let data = await read(`${config.projectDir}/${name}.json`)
+            self.$init(JSON.parse(data))
+            done()
+        },
+        async save(self, done, fail) {
             if (self.$isChange()) {
                 self.updatedAt = Date.now()
             }
-            save()
-            
+            await write(self.$v.projectPath, JSON.stringify(self.$v.output, null, 4))
+            done()
         },
-        write(self, ids) {
-            fsx.removeSync(outputDir)
-            if (fs.existsSync(outputDir) === false) {
-                fs.mkdirSync(outputDir)
-            }
-            fs.writeFileSync(`${outputDir}/config.js`, `exports.config = ${JSON.stringify({
+        async write(self, done, fail, { specs }) {
+            let promises = []
+            let devDependencies = {}
+            let releaseDir = config.releaseDir
+            let e2eOptions = {
                 framework: 'jasmine',
                 directConnect: true,
                 capabilities: {
@@ -156,24 +166,28 @@ export const Options: IModelOptions<Model, List> = {
                 jasmineNodeOpts: {
                     defaultTimeoutInterval: 10000000
                 },
-                specs: self.specs.items.filter(s => ids ? ids.includes(s.id) : true).map(s => s.name + '.js')
-            }, null, 4)}`)
-            let devDependencies = {}
-            for (let item of self.dependencies.items) {
-                devDependencies[item.name] = item.version
+                specs: self.specs.items.filter(s => specs ? specs.includes(s.id) : true).map(s => s.name + '.js')
             }
-            fs.writeFileSync(`${outputDir}/package.json`, JSON.stringify({
+            let packageOptions = {
                 scripts: {
                     test: `protractor "./config.js"`
                 },
                 devDependencies
-            }, null, 4))
+            }
+            for (let item of self.dependencies.items) {
+                devDependencies[item.name] = item.version
+            }
+            await rmdir(releaseDir)
+            await mkdir(releaseDir)
             self.specs.forEach(model => {
-                if (ids && !ids.includes(model.id)) {
-                    return null
+                if ((specs && !specs.includes(model.id)) !== true) {
+                    promises.push(write(`${releaseDir}/${model.name}.js`, model.$v.write, true))
                 }
-                fs.writeFileSync(`${outputDir}/${model.name}.js`, model.$v.write)
             })
+            await write(`${releaseDir}/config.js`, `exports.config = ${JSON.stringify(e2eOptions, null, 4)}`)
+            await write(`${releaseDir}/package.json`, JSON.stringify(packageOptions, null, 4))
+            await Promise.all(promises)
+            done()
         }
     }
 }
