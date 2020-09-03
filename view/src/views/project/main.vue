@@ -1,40 +1,50 @@
 <template>
     <div>
-        <router-view v-if="project.$ready"></router-view>
+        <router-view></router-view>
     </div>
 </template>
 
-<script>
-import { mapGetters, mapActions, mapMutations } from 'vuex'
+<script lang="ts">
+import core from '@/core'
+import { status } from '@/alas'
+import { defineComponent, reactive, onMounted, onUnmounted } from '@vue/composition-api'
+export default defineComponent({
+    setup() {
 
-export default {
-    computed: {
-        ...mapGetters({
-            project: 'project/project'
+        // =================
+        //
+        // state
+        //
+
+        let $ = reactive({
+            project: status.fetch('project')
         })
-    },
-    mounted() {
-        this.fetch(this.$route.params.project)
-        this.save()
-        this.$core.reloadCustom(this.project)
-    },
-    methods: {
-        ...mapActions({
-            save: 'project/save',
-            fetch: 'project/fetch'
-        }),
-        ...mapMutations({
-            reset: 'project/reset'
-        }),
-        ...mapMutations({
-            resetCopy: 'copy/reset'
+
+        // =================
+        //
+        // mounted
+        //
+
+        onMounted(() => {
+            core.reloadCustom($.project)
         })
-    },
-    destroyed() {
-        this.save()
-        this.reset(['project'])
-        this.resetCopy()
-        this.$core.clearCustom()
+
+        onUnmounted(async() => {
+            await $.project.$o.save.start()
+            status.reset('drag')
+            status.reset('copy')
+            status.reset('project')
+            core.clearCustom()
+        })
+
+        // =================
+        //
+        // done
+        //
+
+        return {
+            $
+        }
     }
-}
+})
 </script>

@@ -11,14 +11,14 @@
             </v-tooltip>
             <v-tooltip bottom>
                 <template v-slot:activator="{ on }">
-                    <v-btn v-on="on" small icon @click="invoke()">
+                    <v-btn v-on="on" small icon @click="invokeTest()">
                         <v-icon>mdi-play</v-icon>
                     </v-btn>
                 </template>
                 <span>運行測試</span>
             </v-tooltip>
         </ui-app-bar>
-        <v-btn fab dark fixed right bottom color="primary" @click="create">
+        <v-btn fab dark fixed right bottom color="primary" @click="createStep">
             <v-icon>mdi-plus</v-icon>
         </v-btn>
         <div class="pa-5">
@@ -26,7 +26,7 @@
                 <v-col cols="4">
                     <v-select
                         outlined
-                        :items="project.groups.items"
+                        :items="$.project.groups.items"
                         v-model="spec.group"
                         clearable
                         class="mb-4"
@@ -61,10 +61,10 @@
                 <v-toolbar dense elevation="1" color="cyan lighten-5">
                     <v-toolbar-title>{{ step.name }}</v-toolbar-title>
                     <v-spacer></v-spacer>
-                    <v-btn icon small class="mx-1" @click="update(step)">
+                    <v-btn icon small class="mx-1" @click="updateStep(step)">
                         <v-icon>mdi-square-edit-outline</v-icon>
                     </v-btn>
-                    <v-btn icon small class="mx-1" @click="remove(step.id)">
+                    <v-btn icon small class="mx-1" @click="removeStep(step.id)">
                         <v-icon>mdi-delete</v-icon>
                     </v-btn>
                     <v-btn icon small class="mx-1" @click="pasteStep({ spec, index: index + 1 })" v-if="copyStepUnit">
@@ -88,7 +88,7 @@
                         @write="openWrite"
                         class="draggable-template"
                         v-for="(template, index) in step.templates.items"
-                        :ref="'template-' + template.id"
+                        ref="templates"
                         :step="step"
                         :index="index"
                         :template="template"
@@ -117,7 +117,7 @@
         <ui-invoke ref="invoke"></ui-invoke>
         <ui-confirm ref="remove" title="確定刪除步驟？"></ui-confirm>
         <v-dialog v-model="variable" max-width="800px">
-            <self-variable :project="project"></self-variable>
+            <self-variable :project="$.project"></self-variable>
         </v-dialog>
         <v-card v-if="write" style="position: fixed; bottom: 0; width: 100vw;">
             <v-card-title>
@@ -147,100 +147,143 @@
     </div>
 </template>
 
-<script>
-import uuid from 'uuid/v4'
-import copy from '@/utils/copy'
-import beautify from 'js-beautify'
+<script lang="ts">
+import core from '@/core'
 import Help from './components/help.vue'
 import TempBtn from './components/temp-btn.vue'
 import Template from './components/template.vue'
 import Variable from './components/variable.vue'
-import { mapGetters, mapActions, mapMutations } from 'vuex'
-export default {
-    data() {
-        return {
-            spec: null,
-            write: false,
-            writeContent: '',
-            variable: false,
-            renameName: '',
-            createName: ''
-        }
-    },
+import { v4 as uuidv4 } from 'uuid'
+import { copy } from '@/utils'
+import { Self, RefComponentArray, RefComponent } from '@/vue-core'
+import { beautify } from '@/requests'
+import { alas, status } from '@/alas'
+import { showError, showSuccess } from '@/store'
+import { defineComponent, reactive, onMounted, computed, ref } from '@vue/composition-api'
+export default defineComponent({
     components: {
         'self-help': Help,
         'self-temp-btn': TempBtn,
         'self-variable': Variable,
         'self-template': Template
     },
-    mounted() {
-        this.spec = this.project.specs.items.find(s => s.id === this.$route.params.id)
-    },
-    computed: {
-        ...mapGetters({
-            project: 'project/project'
-        }),
-        ...mapGetters({
-            copyStepUnit: 'copy/step'
-        }),
-        specs() {
-            return this.project.specs.items.filter(s => s.id !== this.spec.id).map(s => {
+    setup(props, context) {
+
+        let self = new Self(context)
+
+        // =================
+        //
+        // refs
+        //
+
+        let help: RefComponent<any> = ref(null)
+        let create: RefComponent<any> = ref(null)
+        let update: RefComponent<any> = ref(null)
+        let invoke: RefComponent<any> = ref(null)
+        let remove: RefComponent<any> = ref(null)
+        let createTemplate: RefComponent<any> = ref(null)
+        let templates: RefComponentArray<any> = ref(null)
+
+        // =================
+        //
+        // state
+        //
+
+        let $ = reactive({
+            project: status.fetch('project'),
+            copy: status.fetch('copy'),
+            spec: null,
+            write: false,
+            writeContent: '',
+            variable: false,
+            renameName: '',
+            createName: ''
+        })
+
+        // =================
+        //
+        // computed
+        //
+
+        let specs = computed(() => {
+            return $.project.specs.items.filter(s => s.id !== $.spec.id).map(s => {
                 return {
                     id: s.id,
                     name: s.$v.typeAndName
                 }
             })
+        })
+
+        // =================
+        //
+        // mounted
+        //
+
+        onMounted(() => {
+            $.spec = $.project.specs.items.find(s => s.id === self.route.params.id)
+        })
+
+        // =================
+        //
+        // methods
+        //
+
+        let openCreateTemplate = (step, index) => {
+            createTemplate.value.open(step, index)
         }
-    },
-    methods: {
-        ...mapActions({
-            save: 'project/save'
-        }),
-        ...mapMutations({
-            copyStep: 'copy/copyStep',
-            pasteStep: 'copy/pasteStep'
-        }),
-        openCreateTemplate(step, index) {
-            this.$refs.createTemplate.open(step, index)
-        },
-        invoke() {
-            this.save()
-            this.$refs.invoke.play([this.spec.id])
-        },
-        create() {
-            this.$refs.create.open(() => {
-                this.spec.steps.write({
-                    name: this.createName
+
+        let invokeTest = () => {
+            $.project.$o.save.start()
+            invoke.value.play([$.spec.id])
+        }
+
+        let createStep = () => {
+            create.value.open(() => {
+                $.spec.steps.write({
+                    name: $.createName
                 })
             })
-        },
-        update(step) {
-            this.renameName = step.name
-            this.$refs.update.open(() => {
-                step.name = this.renameName
+        }
+
+        let updateStep = (step) => {
+            $.renameName = step.name
+            update.value.open(() => {
+                step.name = $.renameName
             })
-        },
-        remove(id) {
-            this.$refs.remove.open(done => {
-                this.spec.steps.remove(id)
+        }
+
+        let removeStep = (id) => {
+            remove.value.open(done => {
+                $.spec.steps.remove(id)
                 done()
             })
-        },
-        openTemplateEdit(id) {
-            setTimeout(() => {
-                this.$refs['template-' + id][0].edit = true
-            }, 100)
-        },
-        openHelp(template) {
-            this.$refs.help.open(template)
-        },
-        openWrite(template) {
-            this.write = true
-            this.writeContent = beautify.js(this.$core.templates[template.name].write(template.props), { indent_size: 4 })
-        },
-        copyCode() {
-            copy(this.writeContent)
         }
+
+        let openTemplateEdit = (id) => {
+            setTimeout(() => {
+                templates[id].edit = true
+            }, 100)
+        }
+
+        let openHelp = (template) => {
+            help.value.open(template)
+        }
+
+        let openWrite = async(template) => {
+            $.write = true
+            $.writeContent = await beautify(core.templates[template.name].write(template.props), 4)
+        }
+
+        let copyCode = () => {
+            copy($.writeContent)
+        }
+
+        // =================
+        //
+        // done
+        //
+
+        return {}
     }
-}
+})
 </script>

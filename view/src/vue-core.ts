@@ -17,7 +17,7 @@ export type RefElementArray<E extends Element> = {
 }
 
 export class Self {
-    private timers: { [key: string]: any }
+    private timers: { [key: string]: any } = {}
     private context: SetupContext
     constructor(context: SetupContext) {
         this.context = context

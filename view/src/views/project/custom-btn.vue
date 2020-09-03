@@ -1,6 +1,6 @@
 <template>
     <div id="custom-btn" class="grey lighten-3 px-1" style="height: calc(100vh - 56px)">
-        <ui-app-bar :title="'自定義按鈕 - ' + project.name" :back="{ name: 'project' }">
+        <ui-app-bar :title="'自定義按鈕 - ' + $.project.name" :back="{ name: 'project' }">
             <v-tooltip bottom>
                 <template v-slot:activator="{ on }">
                     <v-btn v-on="on" small icon href="https://github.com/KHC-ZhiHao/WEB-E2E-GUI" target="_blank">
@@ -15,9 +15,9 @@
                 <v-card class="custom-btn-card" ref="list">
                     <v-list class="py-0">
                         <v-list-item
-                            v-for="(btn, index) in project.customBtns.items"
+                            v-for="(btn, index) in $.project.customBtns.items"
                             :key="index + 'btn'"
-                            :class="target === btn ? 'blue-grey lighten-5' : ''"
+                            :class="$.target === btn ? 'blue-grey lighten-5' : ''"
                             @click="select(btn)">
                             <v-list-item-content>
                                 <v-list-item-title>{{ btn.name }}</v-list-item-title>
@@ -26,64 +26,79 @@
                     </v-list>
                 </v-card>
                 <v-toolbar dense class="mt-2 elevation-1">
-                    <v-btn text block @click="create">加入一個按鈕</v-btn>
+                    <v-btn text block @click="createBtn">加入一個按鈕</v-btn>
                 </v-toolbar>
             </v-col>
             <v-col cols="9">
                 <v-card class="custom-btn-card">
                     <codemirror
-                        v-if="target"
-                        v-model="target.script"
+                        v-if="$.target"
+                        v-model="$.target.script"
                         @input="verifyContent"
                         :options="{ mode: 'text/javascript' }"
                     ></codemirror>
                     <div v-else class="pa-4 grey--text">點選按鈕編輯</div>
                 </v-card>
                 <v-toolbar dense class="mt-2 elevation-1">
-                    <span v-if="compile" class="red--text">{{ compile }}</span>
+                    <span v-if="$.compile" class="red--text">{{ $.compile }}</span>
                     <span v-else class="grey--text">無異常</span>
                 </v-toolbar>
             </v-col>
         </v-row>
         <ui-form title="建立按鈕" ref="create">
             <v-alert dense outlined type="error">為了確保測試不會造成依賴失敗，建立後無法刪除按鈕</v-alert>
-            <v-text-field v-model="createName" label="名稱" outlined :rules="$alas.rules(['#ms.required'])"></v-text-field>
+            <v-text-field v-model="$.createName" label="名稱" outlined :rules="$alas.rules(['#ms.required'])"></v-text-field>
         </ui-form>
     </div>
 </template>
 
-<style>
+<script lang="ts">
+import core from '@/core'
+import { beautify } from '@/requests'
+import { status } from '@/alas'
+import { Self, RefComponent } from '@/vue-core'
+import { defineComponent, reactive, onUnmounted, ref } from '@vue/composition-api'
+export default defineComponent({
+    setup(props, context) {
 
-.custom-btn-card {
-    height: calc(100vh - 152px);
-    overflow: auto;
-}
+        let self = new Self(context)
 
-#custom-btn .CodeMirror {
-    overflow-y: scroll !important;
-    height: calc(100vh - 152px) !important;
-}
+        // =================
+        //
+        // ref
+        //
 
-</style>
+        let list: RefComponent<any> = ref(null)
 
-<script>
-import beautify from 'js-beautify'
-import { mapGetters, mapActions } from 'vuex'
-export default {
-    data() {
-        return {
+        let create: RefComponent<any> = ref(null)
+
+        // =================
+        //
+        // state
+        //
+
+        let $ = reactive({
+            project: status.fetch('project'),
             target: null,
             compile: null,
             createName: ''
-        }
-    },
-    computed: {
-        ...mapGetters({
-            project: 'project/project'
         })
-    },
-    methods: {
-        getBtnScript() {
+
+        // =================
+        //
+        // mounted
+        //
+
+        onUnmounted(() => {
+            core.reloadCustom($.project)
+        })
+
+        // =================
+        //
+        // methods
+        //
+
+        let getBtnScript = async() => {
             let script = `
                 {
                     info: '等待',
@@ -113,56 +128,82 @@ export default {
                     }
                 }
             `
-            return beautify.js(script.trim(), {
-                indent_size: 8
-            })
-        },
-        select(btn) {
-            this.target = btn
-            this.$forceUpdate()
-        },
-        create() {
-            this.$refs.create.open(() => {
-                if (this.project.customBtns.fetch(this.createName)) {
+            let result = await beautify(script, 8)
+            return result
+        }
+
+        let select = (btn) => {
+            $.target = btn
+            self.forceUpdate()
+        }
+
+        let createBtn = () => {
+            create.value.open(async() => {
+                if ($.project.customBtns.fetch($.createName)) {
                     alert('按鈕已經存在')
                 } else {
-                    this.project.customBtns.write({
-                        name: this.createName,
-                        script: this.getBtnScript()
+                    $.project.customBtns.write({
+                        name: $.createName,
+                        script: await getBtnScript()
                     })
-                    this.target = this.project.customBtns.fetch(this.createName)
-                    this.$forceUpdate()
-                    this.$nextTick(() => {
-                        this.$refs.list.$el.scrollTo(0, 999999999)
+                    $.target = $.project.customBtns.fetch($.createName)
+                    self.forceUpdate()
+                    self.nextTick(() => {
+                        list.value.$el.scrollTo(0, 999999999)
                     })
                 }
-                this.createName = ''
+                $.createName = ''
             })
-        },
-        async verifyContent() {
-            if (this.target == null) {
-                this.compile = null
+        }
+
+        let verifyContent = async () => {
+            if ($.target == null) {
+                $.compile = null
             }
             let result = null
             try {
-                eval('result = ' + this.target.script)
+                eval('result = ' + $.target.script)
             } catch (error) {
-                return this.compile = `編譯失敗(${error.message})`
+                return $.compile = `編譯失敗(${error.message})`
             }
             try {
-                this.$core.verifyTemplate({
+                core.verifyTemplate({
                     name: 'test',
                     type: 'action',
                     ...result
                 })
-                this.compile = null
+                $.compile = null
             } catch (error) {
-                this.compile = `格式不正確(${error.message})`
+                $.compile = `格式不正確(${error.message})`
             }
         }
-    },
-    destroyed() {
-        this.$core.reloadCustom(this.project)
+
+        // =================
+        //
+        // done
+        //
+
+        return {
+            $,
+            list,
+            create,
+            getBtnScript,
+            select,
+            createBtn,
+            verifyContent
+        }
     }
-}
+})
 </script>
+
+<style>
+    .custom-btn-card {
+        height: calc(100vh - 152px);
+        overflow: auto;
+    }
+
+    #custom-btn .CodeMirror {
+        overflow-y: scroll !important;
+        height: calc(100vh - 152px) !important;
+    }
+</style>

@@ -1,4 +1,5 @@
 {
+    "name": "web-e2e-gui",
     "host": "localhost",
     "port": "7777",
     "releaseDir": "release",

@@ -1,9 +1,10 @@
 import AlasCore from 'alas'
 import MsPackage from 'alas/packages/ms'
 import Status from './status'
+import * as Action from './action'
 
-import * as Project from './project'
-import * as Actions from './actions'
+import * as Project from './project/index'
+import * as Actions from './actions/index'
 
 type Containers = {
     project: Project.Container,
@@ -12,7 +13,7 @@ type Containers = {
 
 export const alas: AlasCore<Containers> = new AlasCore()
 export const status = Status
-export const message = status.fetch('message').$m.push
+export const action = Action
 
 alas.setLocale('zh-tw')
 alas.addPackage(MsPackage)

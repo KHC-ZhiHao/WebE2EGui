@@ -22,6 +22,9 @@ export const Options: IModelOptions<Model, List> = {
     body: {
         toasts: []
     },
+    defs: {
+        toasts: () => []
+    },
     methods: {
         push(self, type, message) {
             self.toasts.push({

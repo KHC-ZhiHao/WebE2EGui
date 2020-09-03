@@ -20,7 +20,18 @@ const routes: RouteConfig[] = [
         name: 'home',
         path: '/home',
         component: () => import('@/views/home.vue')
-    }
+    },
+    // {
+    //     path: '/project',
+    //     component: () => import('@/views/project/main.vue'),
+    //     children: [
+    //         {
+    //             path: '/',
+    //             name: 'project.overview',
+    //             component: () => import('@/views/project/overview.vue')
+    //         }
+    //     ]
+    // }
 ]
 
 const router = new VueRouter({

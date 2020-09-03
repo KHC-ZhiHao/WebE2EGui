@@ -6,13 +6,17 @@ export function getConfig() {
 }
 
 export function copy(text: string) {
-    var textarea = document.createElement('textarea')
+    let textarea = document.createElement('textarea')
     document.body.appendChild(textarea)
     textarea.innerText = text
     textarea.select()
     textarea.focus()
     document.execCommand('copy')
     textarea.remove()
+}
+
+export function swapArray(list: IList<any>, index1, index2) {
+    list.items[index1] = list.items.splice(index2, 1, list.items[index1])[0]
 }
 
 export function indexUp(list: IList<any>, index) {
@@ -25,8 +29,4 @@ export function indexDown(list: IList<any>, index) {
     if (index !== 0) {
         swapArray(list, index, index - 1)
     }
-}
-
-export function swapArray(list: IList<any>, index1, index2) {
-    list.items[index1] = list.items.splice(index2, 1, list.items[index1])[0]
 }

@@ -51,7 +51,6 @@
 
 <script>
 import uuid from 'uuid/v4'
-import Template from './template'
 import { mapGetters, mapActions, mapMutations } from 'vuex'
 export default {
     data() {
@@ -61,9 +60,6 @@ export default {
             index: null,
             dialog: false
         }
-    },
-    components: {
-        'self-template': Template
     },
     computed: {
         ...mapGetters({
