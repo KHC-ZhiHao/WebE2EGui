@@ -26,7 +26,7 @@ const routes: RouteConfig[] = [
     //     component: () => import('@/views/project/main.vue'),
     //     children: [
     //         {
-    //             path: '/',
+    //             path: ':project',
     //             name: 'project.overview',
     //             component: () => import('@/views/project/overview.vue')
     //         }

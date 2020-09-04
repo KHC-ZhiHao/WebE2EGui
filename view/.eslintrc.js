@@ -27,6 +27,7 @@ module.exports = {
         'vue/html-closing-bracket-spacing': 'off',
         'vue/require-prop-types': 'off',
         'vue/require-default-prop': 'off',
+        '@typescript-eslint/no-use-before-define': 'off',
         '@typescript-eslint/member-delimiter-style': 'off',
         '@typescript-eslint/no-empty-function': 'off',
         '@typescript-eslint/explicit-module-boundary-types': 'off',

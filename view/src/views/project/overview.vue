@@ -1,8 +1,8 @@
 <template>
     <div style="min-height: 100vh" class="grey lighten-3">
-        <input ref="output-js" hidden type="file" nwdirectory @change="outputJS">
-        <input ref="output-file" hidden type="file" nwdirectory @change="outputProject">
-        <ui-app-bar :title="'專案 - ' + project.name" :back="{ name: 'home' }">
+        <input ref="jsFile" hidden type="file" webkitdirectory @change="outputJS">
+        <input ref="outputFile" hidden type="file" webkitdirectory @change="outputProject">
+        <ui-app-bar :title="'專案 - ' + $.project.name" :back="{ name: 'home' }">
             <v-tooltip bottom>
                 <template v-slot:activator="{ on }">
                     <v-btn v-on="on" small icon class="mr-2" @click="outputJSClick">
@@ -61,23 +61,23 @@
             </v-tooltip>
             <v-tooltip bottom>
                 <template v-slot:activator="{ on }">
-                    <v-btn v-on="on" small icon @click="invoke()">
+                    <v-btn v-on="on" small icon @click="invokeTest()">
                         <v-icon>mdi-play</v-icon>
                     </v-btn>
                 </template>
                 <span>運行所有測試</span>
             </v-tooltip>
         </ui-app-bar>
-        <div v-if="project.specs.size === 0" class="text-center pt-5 subtitle-1 grey--text">
+        <div v-if="$.project.specs.size === 0" class="text-center pt-5 subtitle-1 grey--text">
             <div>😥</div>
             <div>一個測試也沒有</div>
         </div>
         <div v-else>
-            <div v-for="(group, index) in project.groups.items" :key="index + 't'" class="pa-5">
+            <div v-for="(group, index) in $.project.groups.items" :key="index + 't'" class="pa-5">
                 <div class="title">{{ group.name }}</div>
                 <v-divider class="mt-3 mb-1"></v-divider>
                 <v-row>
-                    <template v-for="(spec, index) in project.specs.items">
+                    <template v-for="(spec, index) in $.project.specs.items">
                         <v-col
                             :key="index"
                             :cols="4"
@@ -96,7 +96,7 @@
                 </v-row>
             </div>
             <!-- 無分類 -->
-            <div class="pa-5" v-if="project.specs.views.hasNoCategory">
+            <div class="pa-5" v-if="$.project.specs.views.hasNoCategory">
                 <div class="title">無分類</div>
                 <v-divider class="mt-3 mb-1"></v-divider>
                 <v-row>
@@ -130,8 +130,7 @@
         </v-dialog>
         <ui-select-spec ref="selectSpecInvoke"></ui-select-spec>
         <ui-invoke ref="invoke"></ui-invoke>
-        <ui-confirm ref="delete" title="確定刪除測試？"></ui-confirm>
-        <ui-form title="建立測試" ref="create">
+        <ui-form title="建立測試" ref="createForm">
             <v-text-field v-model="createName" label="名稱" outlined :rules="$alas.rules(['#ms.required'])"></v-text-field>
             <v-select
                 outlined
@@ -158,18 +157,30 @@
     </div>
 </template>
 
-<script>
-// # API
-import fs from 'fs'
-import fsx from 'fs-extra'
+<script lang="ts">
 import Group from './components/group.vue'
 import Variable from './components/variable.vue'
 import Dependencie from './components/dependencie.vue'
-import { mapGetters, mapActions } from 'vuex'
+import * as requests from '@/requests'
+import { RefComponent, RefElement } from '@/vue-core'
+import { status, action } from '@/alas'
+import { defineComponent, reactive, ref } from '@vue/composition-api'
+export default defineComponent({
+    props: {},
+    components: {
+        'self-group': Group,
+        'self-variable': Variable,
+        'self-dependencie': Dependencie
+    },
+    setup() {
 
-export default {
-    data() {
-        return {
+        // =================
+        //
+        // state
+        //
+
+        let $ = reactive({
+            project: status.fetch('project'),
             createName: '',
             createGroup: '',
             createCopyTarget: null,
@@ -177,95 +188,115 @@ export default {
             group: false,
             removeMode: false,
             dependencie: false
-        }
-    },
-    computed: {
-        ...mapGetters({
-            project: 'project/project'
         })
-    },
-    components: {
-        'self-group': Group,
-        'self-variable': Variable,
-        'self-dependencie': Dependencie
-    },
-    methods: {
-        ...mapActions({
-            save: 'project/save'
-        }),
-        output() {
-            this.$refs['output-file'].click()
-        },
-        outputProject() {
-            this.save()
-            if (this.$refs['output-file'].value) {
-                let path = this.$refs['output-file'].value + `/project-${this.project.name}.json`
-                this.$refs['output-file'].value = ''
-                if (fs.existsSync(path)) {
-                    if (confirm('檔案已存在，是否複寫該檔案？') === false) {
-                        return null
-                    }
-                }
-                fs.writeFileSync(path, JSON.stringify(this.project.$v.output, null, 4))
-                alert(`檔案輸出完畢(${path})`)
+
+        // =================
+        //
+        // refs
+        //
+
+        let invoke: RefComponent<any> = ref(null)
+        let jsFile: RefElement<HTMLInputElement> = ref(null)
+        let outputFile: RefElement<HTMLInputElement> = ref(null)
+        let selectSpecInvoke: RefComponent<any> = ref(null)
+        let createForm: RefComponent<any> = ref(null)
+
+        // =================
+        //
+        // methods
+        //
+
+        let output = () => {
+            outputFile.value.click()
+        }
+
+        let outputProject = async() => {
+            await $.project.$o.save.start()
+            if (outputFile.value.value) {
+                let path = outputFile.value.value + `/project-${$.project.name}.json`
+                await requests.write(path, JSON.stringify($.project.$v.output, null, 4))
+                action.message('success', `檔案輸出完畢(${path})`)
+                outputFile.value.value = ''
             }
-        },
-        outputJSClick() {
-            this.$refs['output-js'].click()
-        },
-        outputJS() {
-            this.save()
-            this.project.$m.write()
-            if (this.$refs['output-js'].value) {
-                let path = this.$refs['output-js'].value + `/e2e-project-${this.project.name}-js`
-                this.$refs['output-js'].value = ''
-                if (fs.existsSync(path)) {
-                    if (confirm('檔案已存在，是否複寫該檔案？') === false) {
-                        return null
-                    }
-                    fsx.removeSync(path)
-                }
-                fsx.copySync(outputDir, path)
-                fs.writeFileSync(path + `/project-${this.project.name}.json`, JSON.stringify(this.project.$v.output, null, 4))
-                alert(`檔案輸出完畢(${path})`)
+        }
+
+        let outputJSClick = () => {
+            jsFile.value.click()
+        }
+
+        let outputJS = async() => {
+            await $.project.$o.save.start()
+            await $.project.$o.write.start({})
+            if (jsFile.value.value) {
+                let path = jsFile.value.value + `/e2e-project-${$.project.name}-js`
+                jsFile.value.value = ''
+                // fsx.copySync(outputDir, path)
+                // fs.writeFileSync(path + `/project-${this.project.name}.json`, JSON.stringify(this.project.$v.output, null, 4))
+                action.message('success', `檔案輸出完畢(${path})`)
             }
-        },
-        invoke() {
-            this.$refs.selectSpecInvoke.open(specs => {
-                this.save()
-                this.$refs.invoke.play(specs.map(s => s.id))
+        }
+
+        let invokeTest = () => {
+            selectSpecInvoke.value.open(async specs => {
+                await $.project.$o.save.start()
+                invoke.value.play(specs.map(s => s.id))
             })
-        },
-        target(spec) {
+        }
+
+        let target = (spec) => {
             return {
                 name: 'project.spec',
                 params: {
                     id: spec.id
                 }
             }
-        },
-        create() {
-            this.$refs.create.open(() => {
-                if (this.createCopyTarget) {
-                    let target = this.createCopyTarget.$export()
+        }
+
+        let create = () => {
+            createForm.value.open(() => {
+                if ($.createCopyTarget) {
+                    let target = $.createCopyTarget.$export()
                     target.id = undefined
-                    target.name = this.createName
-                    target.group = this.createGroup
-                    this.project.specs.write(target)
+                    target.name = $.createName
+                    target.group = $.createGroup
+                    $.project.specs.write(target)
                 } else {
-                    this.project.specs.write({
-                        name: this.createName,
-                        group: this.createGroup
+                    $.project.specs.write({
+                        name: $.createName,
+                        group: $.createGroup
                     })
                 }
             })
-        },
-        remove(id) {
-            this.$refs.delete.open(done => {
-                this.project.specs.remove(id)
+        }
+
+        let remove = (id) => {
+            action.confirm('確定刪除測試？',done => {
+                $.project.specs.remove(id)
                 done()
             })
         }
+
+        // =================
+        //
+        // done
+        //
+
+        return {
+            $,
+            invoke,
+            jsFile,
+            outputFile,
+            selectSpecInvoke,
+            createForm,
+            output,
+            outputProject,
+            outputJSClick,
+            outputJS,
+            invokeTest,
+            target,
+            create,
+            remove
+        }
     }
-}
+})
 </script>

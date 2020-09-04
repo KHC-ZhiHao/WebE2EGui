@@ -1,6 +1,6 @@
 <template>
     <v-card>
-        <ui-install ref="install"></ui-install>
+        <ui-install ref="installUI"></ui-install>
         <v-card-title primary-title>
             npm依賴套件
             <v-spacer></v-spacer>
@@ -51,22 +51,68 @@
         <v-btn tile block color="primary" class="mt-2" @click="addDependencie">加入一個依賴</v-btn>
     </v-card>
 </template>
+<script lang="ts">
+import * as Project from '@/alas/project/project'
+import { RefComponent } from '@/vue-core'
+import { defineComponent, reactive, onMounted, ref, PropType } from '@vue/composition-api'
 
-<script>
-export default {
-    props: ['project'],
-    methods: {
-        remove(id) {
-            this.project.dependencies.remove(id)
-        },
-        install() {
-            this.$refs.install.open(this.project)
-        },
-        addDependencie() {
-            this.project.dependencies.write({
+export default defineComponent({
+    props: {
+        project: Object as PropType<Project.Model>
+    },
+    setup(props) {
+
+        // =================
+        //
+        // refs
+        //
+
+        let installUI: RefComponent<any> = ref(null)
+
+        // =================
+        //
+        // state
+        //
+
+        let $ = reactive({})
+
+        // =================
+        //
+        // mounted
+        //
+
+        onMounted(() => {})
+
+        // =================
+        //
+        // methods
+        //
+
+        let remove = (id) => {
+            props.project.dependencies.remove(id)
+        }
+
+        let install = () => {
+            installUI.value.open(props.project)
+        }
+
+        let addDependencie = () => {
+            props.project.dependencies.write({
                 name: ''
             })
         }
+
+        // =================
+        //
+        // done
+        //
+
+        return {
+            $,
+            remove,
+            install,
+            addDependencie
+        }
     }
-}
+})
 </script>

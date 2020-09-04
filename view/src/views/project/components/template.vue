@@ -85,36 +85,6 @@
     </div>
 </template>
 
-<style>
-    #template .CodeMirror {
-        border: 1px solid #000;
-        overflow-y: scroll !important;
-        height: 200px !important;
-    }
-    .template-add-btn {
-        height: 7px;
-        transition: .1s;
-        cursor: pointer;
-        background-color: rgba(0, 0, 0, 0.05);
-    }
-    .template-add-btn:hover {
-        background-color: rgba(255, 0, 0, 0.1);
-    }
-    .template-drag-btn {
-        height: 7px;
-        transition: .1s;
-        padding: 4px 10px;
-        overflow: hidden;
-        text-align: center;
-        cursor: pointer;
-        background-color: rgba(0, 0, 0, 0.1);
-    }
-    .template-drag-btn-drag-here {
-        height: 34px;
-        background-color: rgba(0, 0, 0, 0.05);
-    }
-</style>
-
 <script>
 import { mapGetters, mapMutations } from 'vuex'
 export default {
@@ -179,3 +149,33 @@ export default {
     }
 }
 </script>
+
+<style>
+    #template .CodeMirror {
+        border: 1px solid #000;
+        overflow-y: scroll !important;
+        height: 200px !important;
+    }
+    .template-add-btn {
+        height: 7px;
+        transition: .1s;
+        cursor: pointer;
+        background-color: rgba(0, 0, 0, 0.05);
+    }
+    .template-add-btn:hover {
+        background-color: rgba(255, 0, 0, 0.1);
+    }
+    .template-drag-btn {
+        height: 7px;
+        transition: .1s;
+        padding: 4px 10px;
+        overflow: hidden;
+        text-align: center;
+        cursor: pointer;
+        background-color: rgba(0, 0, 0, 0.1);
+    }
+    .template-drag-btn-drag-here {
+        height: 34px;
+        background-color: rgba(0, 0, 0, 0.05);
+    }
+</style>

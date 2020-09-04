@@ -158,7 +158,6 @@ import { copy } from '@/utils'
 import { Self, RefComponentArray, RefComponent } from '@/vue-core'
 import { beautify } from '@/requests'
 import { alas, status } from '@/alas'
-import { showError, showSuccess } from '@/store'
 import { defineComponent, reactive, onMounted, computed, ref } from '@vue/composition-api'
 export default defineComponent({
     components: {

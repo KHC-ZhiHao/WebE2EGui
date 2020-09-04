@@ -5,6 +5,14 @@ export function getConfig() {
     return config
 }
 
+export function readFileText(file: File): Promise<string> {
+    return new Promise(resolve => {
+        let reader = new FileReader()
+        reader.onload = event => resolve(event.target.result as string)
+        reader.readAsText(file)
+    })
+}
+
 export function copy(text: string) {
     let textarea = document.createElement('textarea')
     document.body.appendChild(textarea)

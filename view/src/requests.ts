@@ -7,6 +7,10 @@ export const axios = Axios.create({
     baseURL: `http://${host}:${port}/`
 })
 
+export async function remove(name: string) {
+    await axios.post('remove', { name })
+}
+
 export async function read(name: string): Promise<string> {
     let result = await axios.post('read', { name })
     return result.data.data

@@ -1,15 +1,18 @@
 <template>
     <div>
-        <router-view></router-view>
+        <router-view v-if="$.project.$ready"></router-view>
     </div>
 </template>
 
 <script lang="ts">
 import core from '@/core'
+import { Self } from '@/vue-core'
 import { status } from '@/alas'
 import { defineComponent, reactive, onMounted, onUnmounted } from '@vue/composition-api'
 export default defineComponent({
-    setup() {
+    setup(props, context) {
+
+        let self = new Self(context)
 
         // =================
         //
@@ -25,7 +28,10 @@ export default defineComponent({
         // mounted
         //
 
-        onMounted(() => {
+        onMounted(async() => {
+            await $.project.$o.fetch.start({
+                name: self.route.params.project
+            })
             core.reloadCustom($.project)
         })
 

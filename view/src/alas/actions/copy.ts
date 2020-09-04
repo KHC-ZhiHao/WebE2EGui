@@ -1,7 +1,7 @@
 import * as Spec from '@/alas/project/spec'
 import * as Step from '@/alas/project/step'
 import * as Template from '@/alas/project/template'
-import { message } from '@/alas'
+import { action } from '@/alas'
 import { IModelOptions, IModel, IList } from 'alas'
 
 export interface Model extends IModel {
@@ -26,7 +26,7 @@ export const Options: IModelOptions<Model, List> = {
     methods: {
         copyTemplate(self, template) {
             self.templates.push(template.$copy())
-            message('success', '成功加入剪貼簿')
+            action.message('success', '成功加入剪貼簿')
         },
         removeTemplate(self, index) {
             self.templates.splice(index, 1)
@@ -42,7 +42,7 @@ export const Options: IModelOptions<Model, List> = {
         },
         copyStep(self, step) {
             self.step = step
-            message('success', '複製成功')
+            action.message('success', '複製成功')
         },
         pasteStep(self, { spec, index }) {
             let { name, templates } = self.step.$copy()

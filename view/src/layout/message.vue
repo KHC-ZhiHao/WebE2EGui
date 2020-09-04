@@ -10,6 +10,7 @@
                 <v-layout justify-center align-center class="px-3">
                     <v-icon class="mr-2" v-if="data.type === 'error'">mdi-alert-circle-outline</v-icon>
                     <v-icon class="mr-2" v-if="data.type === 'success'">mdi-check</v-icon>
+                    <span>({{ data.time }})</span>
                     <div class="message-component-message" style="width: 80%; word-wrap: break-word" v-html="data.message"></div>
                     <v-spacer></v-spacer>
                     <v-btn icon @click.native="remove(index)">
@@ -78,7 +79,9 @@ export default defineComponent({
         // timer
         //
 
-        self.timer('count', 1000, () => update())
+        self.timer('count', 1000, () => {
+            update()
+        })
 
         // =================
         //

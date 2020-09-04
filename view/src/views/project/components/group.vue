@@ -33,20 +33,40 @@
         <v-btn tile block color="primary" class="mt-2" @click="create">加入一個分類</v-btn>
     </v-card>
 </template>
+<script lang="ts">
+import * as Project from '@/alas/project/project'
+import { defineComponent, PropType } from '@vue/composition-api'
+export default defineComponent({
+    props: {
+        project: Object as PropType<Project.Model>
+    },
+    setup(props) {
 
-<script>
-export default {
-    props: ['project'],
-    methods: {
-        remove(id) {
-            this.project.groups.remove(id)
-        },
-        create() {
-            this.project.groups.write({
+        // =================
+        //
+        // methods
+        //
+
+        let remove = (id) => {
+            props.project.groups.remove(id)
+        }
+
+        let create = () => {
+            props.project.groups.write({
                 name: '',
                 level: 0
             })
         }
+
+        // =================
+        //
+        // done
+        //
+
+        return {
+            remove,
+            create
+        }
     }
-}
+})
 </script>

@@ -1,14 +1,13 @@
 <template>
-    <div style="min-height: 100vh" class="grey lighten-3">
-        <input ref="input-file" hidden type="file" @change="inputProject" accept=".json">
+    <div>
+        <input ref="inputFile" hidden type="file" @change="inputProject" accept=".json">
         <ui-install ref="install" @done="installDone"></ui-install>
-        <ui-confirm ref="delete" title="確定刪除專案？"></ui-confirm>
-        <ui-form ref="create" title="建立專案">
+        <ui-form ref="createForm" title="建立專案">
             <v-text-field
-                v-model="createName"
+                v-model="$.createName"
                 label="名稱"
                 outlined
-                :rules="$alas.rules(['#ms.required'])"
+                :rules="$.alas.rules(['#ms.required'])"
             ></v-text-field>
         </ui-form>
         <ui-app-bar title="首頁">
@@ -22,24 +21,24 @@
             </v-tooltip>
             <v-tooltip bottom>
                 <template v-slot:activator="{ on }">
-                    <v-btn v-on="on" icon small @click="deleteMode = !deleteMode" :color="deleteMode ? 'red' : undefined">
+                    <v-btn v-on="on" icon small @click="$.deleteMode = !$.deleteMode" :color="$.deleteMode ? 'red' : undefined">
                         <v-icon>mdi-trash-can-outline</v-icon>
                     </v-btn>
                 </template>
                 <span>刪除專案</span>
             </v-tooltip>
         </ui-app-bar>
-        <div v-if="projects.length === 0" class="text-center pt-5 subtitle-1 grey--text">
+        <div v-if="$.projects.length === 0" class="text-center pt-5 subtitle-1 grey--text">
             <div>😥</div>
             <div>一個專案也沒有</div>
         </div>
         <v-row class="pa-5 pt-3">
-            <v-col v-for="project in projects" :key="project" :cols="4">
-                <v-card light :to="deleteMode ? undefined : target(project)">
+            <v-col v-for="project in $.projects" :key="project" :cols="4">
+                <v-card light :to="$.deleteMode ? undefined : target(project)">
                     <v-card-title>
                         {{ project }}
                         <v-spacer></v-spacer>
-                        <v-btn v-if="deleteMode" icon @click="remove(project)">
+                        <v-btn v-if="$.deleteMode" icon @click="remove(project)">
                             <v-icon>mdi-trash-can-outline</v-icon>
                         </v-btn>
                     </v-card-title>
@@ -52,78 +51,131 @@
     </div>
 </template>
 
-<script>
-import fs from 'fs'
-import { mapGetters, mapMutations } from 'vuex'
+<script lang="ts">
+import * as requests from '@/requests'
+import { getConfig, readFileText } from '@/utils'
+import { RefComponent, RefElement } from '@/vue-core'
+import { action, alas } from '@/alas'
+import { defineComponent, reactive, onMounted, ref } from '@vue/composition-api'
+export default defineComponent({
+    setup() {
 
-export default {
-    data() {
-        return {
+        let config = getConfig()
+
+        // =================
+        //
+        // refs
+        //
+
+        let install: RefComponent<any> = ref(null)
+        let inputFile: RefElement<HTMLInputElement> = ref(null)
+        let createForm: RefComponent<any> = ref(null)
+
+        // =================
+        //
+        // state
+        //
+
+        let $ = reactive({
+            alas,
             projects: [],
             createName: '',
             deleteMode: false
+        })
+
+        // =================
+        //
+        // mounted
+        //
+
+        onMounted(() => {
+            reload()
+        })
+
+        // =================
+        //
+        // methods
+        //
+
+        let reload = async() => {
+            $.projects = (await requests.readdir(config.projectDir)).map(name => name.replace('.json', ''))
         }
-    },
-    mounted() {
-        this.reload()
-    },
-    methods: {
-        input() {
-            this.$refs['input-file'].click()
-        },
-        inputProject() {
-            if (!this.$refs['input-file'].value) {
+
+        let input = () => {
+            inputFile.value.click()
+        }
+
+        let inputProject = async() => {
+            if (!inputFile.value.value) {
                 return null
             }
-            let target = JSON.parse(fs.readFileSync(this.$refs['input-file'].value))
-            let project = this.$alas.make('project/project').$init(target)
+            let target = await readFileText(inputFile.value.files[0])
+            let project = alas.make('project', 'project').$init(JSON.parse(target))
             if (project.name == null) {
-                return alert('格式不正確')
+                return action.message('error', '格式不正確')
             }
-            let path = `${projectDir}/${project.name}.json`
-            if (fs.existsSync(path)) {
-                if (confirm('專案已存在，是否複寫該專案？') === false) {
-                    return null
-                }
+            if ($.projects.includes(project.name)) {
+                return action.message('error', '專案已存在')
             }
-            project.$m.save()
-            this.$refs['install'].open(project)
-            this.$refs['input-file'].value = ''
-            this.reload()
-        },
-        reload() {
-            this.projects = fs.readdirSync(projectDir).map(name => name.replace('.json', ''))
-        },
-        create() {
-            this.$refs.create.open(() => {
-                let path = `${projectDir}/${this.createName}.json`
-                if (fs.existsSync(path)) {
-                    return alert('專案已存在。')
+            await project.$o.save.start()
+            install.value.open(project)
+            inputFile.value.value = ''
+            reload()
+        }
+
+        let create = () => {
+            createForm.value.open(async() => {
+                if ($.projects.includes($.createName)) {
+                    return action.message('error', '專案已存在。')
                 }
-                let project = this.$alas.make('project/project').$init({ name: this.createName })
-                project.$m.save()
-                this.$refs['install'].open(project)
-                this.reload()
+                let project = alas.make('project', 'project').$init({
+                    name: $.createName
+                })
+                await project.$o.save.start()
+                install.value.open(project)
+                reload()
             })
-        },
-        remove(project) {
-            this.$refs.delete.open(done => {
-                fs.unlinkSync(`${projectDir}/${project}.json`)
-                this.reload()
+        }
+
+        let remove = async(project) => {
+            action.confirm('確定刪除專案？', async done => {
+                await requests.remove(`${config.projectDir}/${project}.json`)
+                reload()
                 done()
             })
-        },
-        target(project) {
+        }
+
+        let target = (project) => {
             return {
-                name: 'project',
+                name: 'project.overview',
                 params: {
                     project: project
                 }
             }
-        },
-        installDone() {
-            this.$refs['install'].close()
+        }
+
+        let installDone = () => {
+            install.value.close()
+        }
+
+        // =================
+        //
+        // done
+        //
+
+        return {
+            $,
+            reload,
+            input,
+            inputProject,
+            inputFile,
+            create,
+            target,
+            remove,
+            install,
+            installDone,
+            createForm
         }
     }
-}
+})
 </script>

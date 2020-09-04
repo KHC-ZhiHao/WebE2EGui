@@ -49,34 +49,40 @@
     </v-dialog>
 </template>
 
-<script>
-import uuid from 'uuid/v4'
-import { mapGetters, mapActions, mapMutations } from 'vuex'
-export default {
-    data() {
-        return {
+<script lang="ts">
+import { Self } from '@/vue-core'
+import { alas, status } from '@/alas'
+import { defineComponent, reactive, onMounted } from '@vue/composition-api'
+export default defineComponent({
+    setup(props, context) {
+
+        let self = new Self(context)
+
+        // =================
+        //
+        // state
+        //
+
+        let $ = reactive({
+            copy: status.fetch('copy'),
             info: '',
             step: null,
             index: null,
             dialog: false
-        }
-    },
-    computed: {
-        ...mapGetters({
-            'copyTemplates': 'copy/templates'
         })
-    },
-    methods: {
-        ...mapMutations({
-            'pasteTemplate': 'copy/pasteTemplate',
-            'removeTemplate': 'copy/removeTemplate'
-        }),
-        open(step, index) {
-            this.step = step
-            this.index = index
-            this.dialog = true
-        },
-        getTypeName(type) {
+
+        // =================
+        //
+        // methods
+        //
+
+        let open = (step, index) => {
+            $.step = step
+            $.index = index
+            $.dialog = true
+        }
+
+        let getTypeName = (type) => {
             if (type === 'action') {
                 return '動作'
             }
@@ -93,31 +99,48 @@ export default {
                 return '自訂'
             }
             return type
-        },
-        addTemplate(name, template) {
+        }
+
+        let addTemplate = (name, template) => {
             let props = {}
             for (let key in template.props) {
                 props[key] = template.props[key].default
             }
-            this.dialog = false
-            this.step.templates.once('$writeSuccess', (self, context, { key }) => {
-                this.$emit('add', key)
+            $.dialog = false
+            $.step.templates.once('$writeSuccess', (self, context, {
+                key
+            }) => {
+                self.$emit('add', key)
             })
-            this.step.templates.write({
+            $.step.templates.write({
                 name,
                 props
             }, {
-                insert: this.index + 1
+                insert: $.index + 1
             })
-        },
-        addPasteTemplate(index) {
-            this.pasteTemplate({
-                step: this.step,
-                insert: this.index,
+        }
+
+        let addPasteTemplate = (index) => {
+            $.copy.$m.pasteTemplate({
+                step: $.step,
+                insert: $.index,
                 index
             })
-            this.dialog = false
+            $.dialog = false
+        }
+
+        // =================
+        //
+        // done
+        //
+
+        return {
+            $,
+            open,
+            getTypeName,
+            addTemplate,
+            // addPasteTemplate
         }
     }
-}
+})
 </script>

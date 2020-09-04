@@ -5,7 +5,7 @@
         <v-card-text>
             <div v-if="project.variables.size === 0" class="mt-1 body-2 grey--text">本專案沒有變數</div>
             <v-row
-                v-for="(variable, index) in project.variables.items"
+                v-for="(variable, index) in $.project.variables.items"
                 :key="index + 't'"
                 hide-details
                 no-gutters
@@ -27,20 +27,47 @@
         <v-btn tile block color="primary" class="mt-2" @click="addVariable">加入一個變數</v-btn>
     </v-card>
 </template>
+<script lang="ts">
+import { status } from '@/alas'
+import { defineComponent, reactive } from '@vue/composition-api'
+export default defineComponent({
+    setup() {
 
-<script>
-export default {
-    props: ['project'],
-    methods: {
-        remove(id) {
-            this.project.variables.remove(id)
-        },
-        addVariable() {
-            this.project.variables.write({
+        // =================
+        //
+        // state
+        //
+
+        let $ = reactive({
+            project: status.fetch('project')
+        })
+
+        // =================
+        //
+        // methods
+        //
+
+        let remove = (id) => {
+            $.project.variables.remove(id)
+        }
+
+        let addVariable = () => {
+            $.project.variables.write({
                 key: '',
                 value: ''
             })
         }
+
+        // =================
+        //
+        // done
+        //
+
+        return {
+            $,
+            remove,
+            addVariable
+        }
     }
-}
+})
 </script>
