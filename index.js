@@ -12,7 +12,7 @@ const config = require('./config.json')
 const app = express()
 const server = http.Server(app)
 const io = socketIo(server)
-const root = './.storage'
+const root = `./${config.root}`
 
 if (fs.existsSync(root) === false) {
     fs.mkdirSync(`${root}`)
@@ -83,7 +83,6 @@ app.post('/exec', function(req, res) {
     let script = req.body.script
     let process = childProcess.exec(script)
     process.stdout.on('data', data => {
-        console.log(data)
         io.emit(id, {
             type: 'data',
             data: stripAnsi(data).trim()

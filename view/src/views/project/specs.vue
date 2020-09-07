@@ -1,6 +1,6 @@
 <template>
     <div v-if="$.spec" style="min-height: 100vh" class="grey lighten-3">
-        <ui-app-bar :title="'測試 - ' + $.spec.name" :back="{ name: 'project' }">
+        <ui-app-bar :title="'測試 - ' + $.spec.name" :back="{ name: 'project.overview' }">
             <v-tooltip bottom>
                 <template v-slot:activator="{ on }">
                     <v-btn v-on="on" small icon class="mr-2" @click="$.variable = true">
@@ -115,7 +115,6 @@
             ></v-text-field>
         </ui-form>
         <ui-invoke ref="invoke"></ui-invoke>
-        <ui-confirm ref="remove" title="確定刪除步驟？"></ui-confirm>
         <v-dialog v-model="$.variable" max-width="800px">
             <self-variable :project="$.project"></self-variable>
         </v-dialog>
@@ -156,7 +155,7 @@ import Variable from './components/variable.vue'
 import { copy } from '@/utils'
 import { Self, RefComponentArray, RefComponent } from '@/vue-core'
 import { beautify } from '@/requests'
-import { alas, status } from '@/alas'
+import { alas, status, action } from '@/alas'
 import { defineComponent, reactive, onMounted, computed, ref } from '@vue/composition-api'
 export default defineComponent({
     props: {},
@@ -179,7 +178,6 @@ export default defineComponent({
         let create: RefComponent<any> = ref(null)
         let update: RefComponent<any> = ref(null)
         let invoke: RefComponent<any> = ref(null)
-        let remove: RefComponent<any> = ref(null)
         let createTemplate: RefComponent<any> = ref(null)
         let templates: RefComponentArray<any> = ref(null)
 
@@ -253,7 +251,7 @@ export default defineComponent({
         }
 
         let removeStep = (id) => {
-            remove.value.open(done => {
+            action.confirm('確定刪除步驟？', done => {
                 $.spec.steps.remove(id)
                 done()
             })
@@ -294,7 +292,13 @@ export default defineComponent({
             openTemplateEdit,
             openHelp,
             openWrite,
-            copyCode
+            copyCode,
+            help,
+            create,
+            update,
+            invoke,
+            createTemplate,
+            templates
         }
     }
 })

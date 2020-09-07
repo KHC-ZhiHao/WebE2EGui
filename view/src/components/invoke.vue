@@ -5,16 +5,16 @@
             <v-card-title :class="$.done ? ($.totalError === 0 ? 'success--text' : 'error--text') : ''">
                 {{ $.done ? `執行完畢，共計錯誤為：${$.totalError}` : `請等待執行完畢` }}
                 <v-spacer></v-spacer>
-                <v-btn v-if="done === true" text @click="copyReport">複製報告</v-btn>
+                <v-btn v-if="$.done === true" text @click="copyReport">複製報告</v-btn>
             </v-card-title>
             <v-card-text>
                 <p v-for="(text, index) in $.result" :key="index + text" v-html="text"></p>
-                <p v-if="$.done && $.errorTest.length > 0" style="color: red">錯誤的測試：{{ $.errorTestReport.join(', ') }}</p>
+                <p v-if="$.done && $.errorTest.length > 0" style="color: red">錯誤的測試：{{ errorTestReport.join(', ') }}</p>
                 <div ref="done"></div>
             </v-card-text>
             <v-card-actions>
                 <v-spacer></v-spacer>
-                <v-btn :loading="$.done === false" text @click="dialog = false">關閉</v-btn>
+                <v-btn :loading="$.done === false" text @click="$.dialog = false">關閉</v-btn>
             </v-card-actions>
         </v-card>
     </v-dialog>
@@ -27,6 +27,7 @@ import { RefElement } from '@/vue-core'
 import { status, action } from '@/alas'
 import { defineComponent, reactive, watch, computed, ref } from '@vue/composition-api'
 export default defineComponent({
+    props: {},
     setup() {
 
         // =================
@@ -127,12 +128,14 @@ export default defineComponent({
             action.message('success', '複製成功')
         }
 
-        let play = async(id) => {
+        let play = async(ids) => {
             $.dialog = true
-            let { releaseDir } = getConfig()
+            let { root, releaseDir } = getConfig()
             try {
-                await $.project.$o.write.start(id)
-                await socket.exec(`protractor "${releaseDir}/config.js"`, (type, data) => {
+                await $.project.$o.write.start({
+                    specs: ids
+                })
+                await socket.exec(`protractor "${root}/${releaseDir}/config.js"`, (type, data) => {
                     if (type === 'exit') {
                         $.done = true
                     } else {

@@ -19,8 +19,9 @@
 import socket from '@/socket'
 import { Self, RefElement } from '@/vue-core'
 import { action } from '@/alas'
-import { defineComponent, reactive, onMounted, watch, ref } from '@vue/composition-api'
+import { defineComponent, reactive, watch, ref } from '@vue/composition-api'
 export default defineComponent({
+    props: {},
     setup(props, context) {
 
         let self = new Self(context)

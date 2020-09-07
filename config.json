@@ -2,6 +2,7 @@
     "name": "web-e2e-gui",
     "host": "localhost",
     "port": "7777",
+    "root": ".storage",
     "releaseDir": "release",
     "projectDir": "projects"
 }
