@@ -1,9 +1,8 @@
-// import fs from 'fs'
-// import fsx from 'fs-extra'
+import JSzip from 'jszip'
 import core from '@/core'
 import { v4 as uuidv4 } from 'uuid'
 import { IModelOptions, IModel, IList, ILoader } from 'alas'
-import { mkdir, rmdir, write, read } from '@/requests'
+import { mkdir, rmdir, write, read, beautify } from '@/requests'
 import { getConfig } from '@/utils'
 
 import * as Spec from './spec'
@@ -46,6 +45,8 @@ export interface Model extends IModel {
     $m: {
         isLockDependencies: (dependencie: string) => boolean
         validate: () => any
+        zip: () => any
+        getOutputFiles: (specs?: string[]) => any
     }
     $o: {
         fetch: ILoader<void, { name: string }>
@@ -116,6 +117,59 @@ export const Options: IModelOptions<Model, List> = {
         }
     },
     methods: {
+        async zip(self) {
+            let { e2eOptions, packageOptions, specsItems } = self.$m.getOutputFiles()
+            let zip = new JSzip()
+            let data = zip.folder("data")
+            zip.file('project.json', JSON.stringify(self.$v.output, null, 4))
+            zip.file('package.json', packageOptions)
+            data.file('config.js', e2eOptions)
+            for (let item of specsItems) {
+                data.file(item.name, await beautify(item.content, 4))
+            }
+            let content = await zip.generateAsync({ type: 'blob' })
+            return content
+        },
+        getOutputFiles(self, specs?) {
+            let e2eOptions = {
+                framework: 'jasmine',
+                directConnect: true,
+                capabilities: {
+                    browserName: 'chrome',
+                    chromeOptions: {
+                        args: ['--window-size=1600,900', '--auto-open-devtools-for-tabs']
+                    }
+                },
+                jasmineNodeOpts: {
+                    defaultTimeoutInterval: 10000000
+                },
+                specs: self.specs.items.filter(s => specs ? specs.includes(s.id) : true).map(s => s.name + '.js')
+            }
+            let devDependencies = {}
+            let packageOptions = {
+                scripts: {
+                    test: `protractor "./config.js"`
+                },
+                devDependencies
+            }
+            for (let item of self.dependencies.items) {
+                devDependencies[item.name] = item.version
+            }
+            let specsItems = []
+            self.specs.forEach(model => {
+                if ((specs && !specs.includes(model.id)) !== true) {
+                    specsItems.push({
+                        name: `${model.name}.js`,
+                        content: model.$v.write
+                    })
+                }
+            })
+            return {
+                e2eOptions: `exports.config = ${JSON.stringify(e2eOptions, null, 4)}`,
+                specsItems,
+                packageOptions: JSON.stringify(packageOptions, null, 4)
+            }
+        },
         isLockDependencies(self, dependencie) {
             return self.$v.lockDependencies.includes(dependencie)
         },
@@ -152,40 +206,15 @@ export const Options: IModelOptions<Model, List> = {
         },
         async write(self, done, fail, { specs }) {
             let promises = []
-            let devDependencies = {}
             let releaseDir = config.releaseDir
-            let e2eOptions = {
-                framework: 'jasmine',
-                directConnect: true,
-                capabilities: {
-                    browserName: 'chrome',
-                    chromeOptions: {
-                        args: ['--window-size=1600,900', '--auto-open-devtools-for-tabs']
-                    }
-                },
-                jasmineNodeOpts: {
-                    defaultTimeoutInterval: 10000000
-                },
-                specs: self.specs.items.filter(s => specs ? specs.includes(s.id) : true).map(s => s.name + '.js')
-            }
-            let packageOptions = {
-                scripts: {
-                    test: `protractor "./config.js"`
-                },
-                devDependencies
-            }
-            for (let item of self.dependencies.items) {
-                devDependencies[item.name] = item.version
-            }
+            let { e2eOptions, packageOptions, specsItems } = self.$m.getOutputFiles(specs)
             await rmdir(releaseDir)
             await mkdir(releaseDir)
-            self.specs.forEach(model => {
-                if ((specs && !specs.includes(model.id)) !== true) {
-                    promises.push(write(`${releaseDir}/${model.name}.js`, model.$v.write, true))
-                }
-            })
-            await write(`${releaseDir}/config.js`, `exports.config = ${JSON.stringify(e2eOptions, null, 4)}`)
-            await write(`${releaseDir}/package.json`, JSON.stringify(packageOptions, null, 4))
+            for (let item of specsItems) {
+                promises.push(write(`${releaseDir}/${item.name}`, item.content, true))
+            }
+            await write(`${releaseDir}/config.js`, e2eOptions)
+            await write(`${releaseDir}/package.json`, packageOptions)
             await Promise.all(promises)
             done()
         }

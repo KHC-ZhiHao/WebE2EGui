@@ -34,6 +34,6 @@ export async function write(path: string, content: string, beautify: boolean = f
 }
 
 export async function beautify(text: string, indentSize: number) {
-    let result = await axios.post('write', { text, indentSize })
-    return result.data
+    let result = await axios.post('beautify', { text, indentSize })
+    return result.data.data
 }

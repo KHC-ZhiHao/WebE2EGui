@@ -1,23 +1,23 @@
 <template>
-    <v-dialog v-model="dialog" class="temp-btn-list" scrollable>
+    <v-dialog v-model="$.dialog" class="temp-btn-list" scrollable>
         <v-card>
             <v-card-title>
                 <span>新增模板</span>
                 <v-spacer></v-spacer>
-                <span class="caption">{{ info }}</span>
+                <span class="caption">{{ $.info }}</span>
             </v-card-title>
             <v-divider class="mb-4 mt-1"></v-divider>
             <v-card-text>
-                <div v-for="type in $core.types" :key="type" class="mb-3">
+                <div v-for="type in $.core.types" :key="type" class="mb-3">
                     <div style="font-size: 18px">{{ getTypeName(type) }}</div>
-                    <span v-for="(template, name) in $core.templates" :key="name">
+                    <span v-for="(template, name) in $.core.templates" :key="name">
                         <v-btn
                             dark
                             v-if="type === template.type"
                             :color="template.color"
                             class="mt-2 mr-2"
-                            @mouseenter="info = template.info"
-                            @mouseleave="info = ''"
+                            @mouseenter="$.info = template.info"
+                            @mouseleave="$.info = ''"
                             @click="addTemplate(name, template)">
                             {{ template.btnText }}
                         </v-btn>
@@ -30,7 +30,7 @@
                         新增自訂按鈕
                     </v-btn>
                 </div>
-                <div class="mb-3" v-if="copyTemplates.length > 0">
+                <!-- <div class="mb-3" v-if="copyTemplates.length > 0">
                     <div class="mb-3" style="font-size: 18px">剪貼簿</div>
                     <v-toolbar dense class="elevation-1" v-for="(template, index) of copyTemplates" :key="template.id + 'key'">
                         <v-card :color="$core.templates[template.name].color">&nbsp;</v-card>
@@ -43,17 +43,19 @@
                             <v-icon>mdi-content-paste</v-icon>
                         </v-btn>
                     </v-toolbar>
-                </div>
+                </div> -->
             </v-card-text>
         </v-card>
     </v-dialog>
 </template>
 
 <script lang="ts">
+import core from '@/core'
 import { Self } from '@/vue-core'
 import { alas, status } from '@/alas'
 import { defineComponent, reactive, onMounted } from '@vue/composition-api'
 export default defineComponent({
+    props: {},
     setup(props, context) {
 
         let self = new Self(context)
@@ -64,6 +66,8 @@ export default defineComponent({
         //
 
         let $ = reactive({
+            core,
+            alas,
             copy: status.fetch('copy'),
             info: '',
             step: null,

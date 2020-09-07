@@ -3,7 +3,7 @@
         <v-card-title primary-title>變數</v-card-title>
         <v-divider class="mb-5 mt-1"></v-divider>
         <v-card-text>
-            <div v-if="project.variables.size === 0" class="mt-1 body-2 grey--text">本專案沒有變數</div>
+            <div v-if="$.project.variables.size === 0" class="mt-1 body-2 grey--text">本專案沒有變數</div>
             <v-row
                 v-for="(variable, index) in $.project.variables.items"
                 :key="index + 't'"
@@ -31,6 +31,7 @@
 import { status } from '@/alas'
 import { defineComponent, reactive } from '@vue/composition-api'
 export default defineComponent({
+    props: {},
     setup() {
 
         // =================

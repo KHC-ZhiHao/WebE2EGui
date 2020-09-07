@@ -21,7 +21,7 @@ if (fs.existsSync(root) === false) {
 }
 
 app.use(cors())
-app.use(express.json())
+app.use(express.json({ limit: '100mb' }))
 
 app.get('/hello', function(req, res) {
     res.send('hello')
@@ -30,7 +30,14 @@ app.get('/hello', function(req, res) {
 app.post('/read', function(req, res) {
     let { name } = req.body
     res.json({
-        data: fs.readFileSync(`${root}/${name}`)
+        data: fs.readFileSync(`${root}/${name}`).toString()
+    })
+})
+
+app.post('/remove', function(req, res) {
+    let { name } = req.body
+    res.json({
+        data: fsx.removeSync(`${root}/${name}`)
     })
 })
 
@@ -75,10 +82,13 @@ app.post('/exec', function(req, res) {
     let id = 'exec-' + Date.now().toString()
     let script = req.body.script
     let process = childProcess.exec(script)
-    process.stdout.on('data', data => io.emit(id, {
-        type: 'data',
-        data: stripAnsi(data).trim()
-    }))
+    process.stdout.on('data', data => {
+        console.log(data)
+        io.emit(id, {
+            type: 'data',
+            data: stripAnsi(data).trim()
+        })
+    })
     process.on('exit', () => io.emit(id, {
         type: 'exit'
     }))
@@ -89,9 +99,11 @@ app.post('/exec', function(req, res) {
 
 app.post('/beautify', function(req, res) {
     let { text, indentSize } = req.body
-    res.send(jsBeautify(text.trim(), {
-        indent_size: indentSize
-    }))
+    res.json({
+        data: jsBeautify(text.trim(), {
+            indent_size: indentSize
+        })
+    })
 })
 
 server.listen(config.port, config.host, () => {

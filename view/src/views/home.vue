@@ -58,6 +58,7 @@ import { RefComponent, RefElement } from '@/vue-core'
 import { action, alas } from '@/alas'
 import { defineComponent, reactive, onMounted, ref } from '@vue/composition-api'
 export default defineComponent({
+    props: {},
     setup() {
 
         let config = getConfig()

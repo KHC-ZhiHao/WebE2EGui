@@ -21,17 +21,22 @@ const routes: RouteConfig[] = [
         path: '/home',
         component: () => import('@/views/home.vue')
     },
-    // {
-    //     path: '/project',
-    //     component: () => import('@/views/project/main.vue'),
-    //     children: [
-    //         {
-    //             path: ':project',
-    //             name: 'project.overview',
-    //             component: () => import('@/views/project/overview.vue')
-    //         }
-    //     ]
-    // }
+    {
+        path: '/project/:project',
+        component: () => import('@/views/project/main.vue'),
+        children: [
+            {
+                path: '/',
+                name: 'project.overview',
+                component: () => import('@/views/project/overview.vue')
+            },
+            {
+                path: 'specs/:id',
+                name: 'project.specs',
+                component: () => import('@/views/project/specs.vue')
+            }
+        ]
+    }
 ]
 
 const router = new VueRouter({

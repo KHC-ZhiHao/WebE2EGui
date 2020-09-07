@@ -1,9 +1,9 @@
 <template>
-    <div v-if="spec" style="min-height: 100vh" class="grey lighten-3">
-        <ui-app-bar :title="'測試 - ' + spec.name" :back="{ name: 'project' }">
+    <div v-if="$.spec" style="min-height: 100vh" class="grey lighten-3">
+        <ui-app-bar :title="'測試 - ' + $.spec.name" :back="{ name: 'project' }">
             <v-tooltip bottom>
                 <template v-slot:activator="{ on }">
-                    <v-btn v-on="on" small icon class="mr-2" @click="variable = true">
+                    <v-btn v-on="on" small icon class="mr-2" @click="$.variable = true">
                         <v-icon>mdi-variable</v-icon>
                     </v-btn>
                 </template>
@@ -27,7 +27,7 @@
                     <v-select
                         outlined
                         :items="$.project.groups.items"
-                        v-model="spec.group"
+                        v-model="$.spec.group"
                         clearable
                         class="mb-4"
                         hide-details
@@ -41,7 +41,7 @@
                         label="名子"
                         class="mb-4"
                         hide-details
-                        v-model="spec.name"
+                        v-model="$.spec.name"
                         outlined
                     ></v-text-field>
                 </v-col>
@@ -49,7 +49,7 @@
             <v-select
                 outlined
                 :items="specs"
-                v-model="spec.parent"
+                v-model="$.spec.parent"
                 hide-details
                 clearable
                 item-text="name"
@@ -57,7 +57,7 @@
                 class="mb-4"
                 label="繼承對象"
             ></v-select>
-            <div v-for="(step, index) in spec.steps.items" :key="step.name + index">
+            <div v-for="(step, index) in $.spec.steps.items" :key="step.name + index">
                 <v-toolbar dense elevation="1" color="cyan lighten-5">
                     <v-toolbar-title>{{ step.name }}</v-toolbar-title>
                     <v-spacer></v-spacer>
@@ -67,16 +67,16 @@
                     <v-btn icon small class="mx-1" @click="removeStep(step.id)">
                         <v-icon>mdi-delete</v-icon>
                     </v-btn>
-                    <v-btn icon small class="mx-1" @click="pasteStep({ spec, index: index + 1 })" v-if="copyStepUnit">
+                    <!-- <v-btn icon small class="mx-1" @click="pasteStep({ spec, index: index + 1 })" v-if="copyStepUnit">
                         <v-icon>mdi-content-paste</v-icon>
                     </v-btn>
                     <v-btn icon small class="mx-1" @click="copyStep(step)">
                         <v-icon>mdi-content-copy</v-icon>
-                    </v-btn>
-                    <v-btn icon small class="mx-1" @click="spec.steps.methods.indexUp(index)">
+                    </v-btn> -->
+                    <v-btn icon small class="mx-1" @click="$.spec.steps.methods.indexUp(index)">
                         <v-icon>mdi-chevron-down</v-icon>
                     </v-btn>
-                    <v-btn icon small class="mx-1" @click="spec.steps.methods.indexDown(index)">
+                    <v-btn icon small class="mx-1" @click="$.spec.steps.methods.indexDown(index)">
                         <v-icon>mdi-chevron-up</v-icon>
                     </v-btn>
                 </v-toolbar>
@@ -96,43 +96,43 @@
                     </self-template>
                 </div>
             </div>
-            <v-btn block light @click="pasteStep({ spec, index: spec.steps.length })" v-if="copyStepUnit">貼上步驟</v-btn>
+            <!-- <v-btn block light @click="pasteStep({ spec: $.spec, index: $.spec.steps.length })" v-if="copyStepUnit">貼上步驟</v-btn> -->
         </div>
         <ui-form title="加入步驟" ref="create">
             <v-text-field
-                :rules="$alas.rules(['#ms.required'])"
-                v-model="createName"
+                :rules="$.alas.rules(['#ms.required'])"
+                v-model="$.createName"
                 label="名稱"
                 outlined
             ></v-text-field>
         </ui-form>
         <ui-form title="更新步驟" ref="update" confirm-name="更新">
             <v-text-field
-                :rules="$alas.rules(['#ms.required'])"
-                v-model="renameName"
+                :rules="$.alas.rules(['#ms.required'])"
+                v-model="$.renameName"
                 label="名稱"
                 outlined
             ></v-text-field>
         </ui-form>
         <ui-invoke ref="invoke"></ui-invoke>
         <ui-confirm ref="remove" title="確定刪除步驟？"></ui-confirm>
-        <v-dialog v-model="variable" max-width="800px">
+        <v-dialog v-model="$.variable" max-width="800px">
             <self-variable :project="$.project"></self-variable>
         </v-dialog>
-        <v-card v-if="write" style="position: fixed; bottom: 0; width: 100vw;">
+        <v-card v-if="$.write" style="position: fixed; bottom: 0; width: 100vw;">
             <v-card-title>
                 輸出程式碼
                 <v-spacer></v-spacer>
                 <v-btn icon @click="copyCode">
                     <v-icon>mdi-content-copy</v-icon>
                 </v-btn>
-                <v-btn icon @click="write = false">
+                <v-btn icon @click="$.write = false">
                     <v-icon>mdi-close</v-icon>
                 </v-btn>
             </v-card-title>
             <v-divider></v-divider>
             <codemirror
-                v-model="writeContent"
+                v-model="$.writeContent"
                 :options="{
                     mode: 'text/javascript',
                     readOnly: true,
@@ -153,13 +153,13 @@ import Help from './components/help.vue'
 import TempBtn from './components/temp-btn.vue'
 import Template from './components/template.vue'
 import Variable from './components/variable.vue'
-import { v4 as uuidv4 } from 'uuid'
 import { copy } from '@/utils'
 import { Self, RefComponentArray, RefComponent } from '@/vue-core'
 import { beautify } from '@/requests'
 import { alas, status } from '@/alas'
 import { defineComponent, reactive, onMounted, computed, ref } from '@vue/composition-api'
 export default defineComponent({
+    props: {},
     components: {
         'self-help': Help,
         'self-temp-btn': TempBtn,
@@ -189,6 +189,7 @@ export default defineComponent({
         //
 
         let $ = reactive({
+            alas,
             project: status.fetch('project'),
             copy: status.fetch('copy'),
             spec: null,
@@ -282,7 +283,19 @@ export default defineComponent({
         // done
         //
 
-        return {}
+        return {
+            $,
+            specs,
+            openCreateTemplate,
+            invokeTest,
+            createStep,
+            updateStep,
+            removeStep,
+            openTemplateEdit,
+            openHelp,
+            openWrite,
+            copyCode
+        }
     }
 })
 </script>
