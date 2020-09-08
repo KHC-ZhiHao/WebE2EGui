@@ -111,11 +111,7 @@ export default defineComponent({
                 props[key] = template.props[key].default
             }
             $.dialog = false
-            $.step.templates.once('$writeSuccess', (self, context, {
-                key
-            }) => {
-                self.$emit('add', key)
-            })
+            $.step.templates.once('$writeSuccess', (step, context, { key }) => self.emit('add', key))
             $.step.templates.write({
                 name,
                 props

@@ -1,5 +1,5 @@
 <template>
-    <div id="template" ref="main">
+    <div id="template" ref="main" v-show="!$.draging">
         <v-card
             light
             class="px-4"
@@ -9,7 +9,7 @@
             :style="$.edit ? 'border: 1px solid cyan' : ''"
             :class="$.edit ? 'pt-4 pb-5' : ''">
             <v-row class="px-3 py-1" align="center">
-                <v-card :color="coreTemplate.color">&nbsp;</v-card>
+                <v-card :color="coreTemplate.color" width="5px" height="25px"></v-card>
                 <div class="ml-3">
                     <div>{{ coreTemplate.display(template.props) }}</div>
                     <div class="caption red--text" v-if="validate !== true">{{ validate }}</div>
@@ -18,9 +18,9 @@
                 <v-btn icon @click="$.edit = !$.edit">
                     <v-icon>mdi-square-edit-outline</v-icon>
                 </v-btn>
-                <!-- <v-btn icon @click="copyTemplate(template)">
+                <v-btn icon @click="copyTemplate(template)">
                     <v-icon>mdi-content-copy</v-icon>
-                </v-btn> -->
+                </v-btn>
                 <v-btn icon @click="$emit('write', template)">
                     <v-icon>mdi-language-javascript</v-icon>
                 </v-btn>
@@ -69,19 +69,19 @@
                 <v-btn class="mt-3" block @click="$.edit = false" color="primary" outlined>關閉</v-btn>
             </div>
         </v-card>
-        <!-- <div
-            v-if="templateDraging"
+        <div
+            v-if="$.drag.$v.draging"
             class="template-drag-btn"
             @dragenter="dragEnter"
             :class="{ 'template-drag-btn-drag-here': dragHere }">
             拖曳模板至此
-        </div> -->
-        <!-- <v-tooltip v-else bottom>
+        </div>
+        <v-tooltip v-else bottom>
             <template v-slot:activator="{ on }">
                 <div v-on="on" class="template-add-btn" @click="$emit('add', step, index)"></div>
             </template>
             <span>加入模板</span>
-        </v-tooltip> -->
+        </v-tooltip>
     </div>
 </template>
 
@@ -97,15 +97,6 @@ export default defineComponent({
         step: Object as PropType<Step.Model>,
         index: Number,
         template: Object as PropType<Template.Model>
-    },
-    computed: {
-        // ...mapGetters({
-        //     keyIn: 'keyIn'
-        // }),
-        // ...mapGetters({
-        //     templateDraging: 'drag/templateDrag',
-        //     templateDragTarget: 'drag/templateDragTarget'
-        // }),
     },
     setup(props, context) {
 
@@ -124,7 +115,10 @@ export default defineComponent({
         //
 
         let $ = reactive({
-            edit: false
+            edit: false,
+            copy: status.fetch('copy'),
+            drag: status.fetch('drag'),
+            draging: false
         })
 
         // =================
@@ -140,9 +134,9 @@ export default defineComponent({
             return core.templates[props.template.name].validate(props.template.props)
         })
 
-        // let dragHere = () => {
-        //     return props.templateDragTarget ? props.template === props.templateDragTarget.template : false
-        // }
+        let dragHere = computed(() => {
+            return $.drag.templateTarget ? props.template === $.drag.templateTarget.template : false
+        })
 
         // =================
         //
@@ -153,48 +147,41 @@ export default defineComponent({
 
         // =================
         //
-        // mounted
-        //
-
-        onMounted(() => {})
-
-        // =================
-        //
         // methods
         //
 
-        // ...mapMutations({
-        //     copyTemplate: 'copy/copyTemplate'
-        // }),
-        // ...mapMutations({
-        //     dragEndTemplate: 'drag/endTemplate',
-        //     dragStartTemplate: 'drag/startTemplate',
-        //     dragEnterTemplate: 'drag/enterTemplate'
-        // })
+        let copyTemplate = (template) => {
+            $.copy.$m.copyTemplate(template)
+        }
 
         let remove = () => {
             props.step.templates.remove(props.template.id)
         }
 
         let dragStart = () => {
-            // this.dragStartTemplate(props.template)
+            $.drag.$m.startTemplate(props.template)
+            setTimeout(() => {
+                $.draging = true
+            }, 10)
         }
 
         let dragEnd = () => {
-            // let hasTarget = !!this.templateDragTarget
-            // this.dragEndTemplate()
-            // if (hasTarget && this.keyIn.includes(18) === false) {
-            //     this.remove()
-            // }
+            let hasTarget = !!$.drag.templateTarget
+            $.drag.$m.endTemplate()
+            $.draging = false
+            if (hasTarget) {
+                remove()
+            }
         }
 
         let dragEnter = () => {
-            // dragEnterTemplate({
-            //     step: props.step,
-            //     index: props.index,
-            //     template: props.template
-            // })
+            $.drag.$m.enterTemplate({
+                step: props.step,
+                index: props.index,
+                template: props.template
+            })
         }
+
         // =================
         //
         // done
@@ -204,10 +191,12 @@ export default defineComponent({
             $,
             main,
             coreTemplate,
+            copyTemplate,
             validate,
             remove,
             dragStart,
             dragEnd,
+            dragHere,
             dragEnter
         }
     }

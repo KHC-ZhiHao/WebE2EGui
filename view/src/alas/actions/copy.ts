@@ -23,6 +23,9 @@ export const Options: IModelOptions<Model, List> = {
         step: [],
         templates: []
     },
+    defs: {
+        templates: () => []
+    },
     methods: {
         copyTemplate(self, template) {
             self.templates.push(template.$copy())

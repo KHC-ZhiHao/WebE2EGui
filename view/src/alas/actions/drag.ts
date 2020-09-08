@@ -9,6 +9,9 @@ export interface Model extends IModel {
         index: number
         template: Template.Model
     }
+    $v: {
+        readonly draging: boolean
+    }
     $m: {
         startTemplate: (template: Template.Model) => void
         endTemplate: () => void
@@ -22,6 +25,11 @@ export const Options: IModelOptions<Model, List> = {
     body: {
         template: [],
         templateTarget: []
+    },
+    views: {
+        draging(self) {
+            return !!self.template
+        }
     },
     methods: {
         startTemplate(self, template) {
