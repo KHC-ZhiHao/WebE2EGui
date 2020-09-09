@@ -41,25 +41,6 @@ WEG仍是較為工程師導向的工具，你必須安裝[NodeJs](https://nodejs
 
 ---
 
-## 如果要進行開發...
-
-你可以直接`clone`專案為你自己客製化開發，或者是`fork`提供幫助。
-
-### 開發模式
-
-```bash
-npm install
-npm run dev
-```
-
-### 部屬應用程式
-
-```bash
-npm run build
-```
-
----
-
 ## 建議
 
 ### JavaScript
@@ -79,12 +60,6 @@ npm run build
 ---
 
 ## 操作手冊
-
-### NWJS
-
-本應用程式的內核，如果想要開發可能需要參考[官網](https://nwjs.io/)。
-
-> 本來想用Electron的，但Vue Electron居然沒有支援Node12...
 
 ### 應用Store
 
@@ -162,8 +137,6 @@ it('輸出結果', async function() {
 }
 ```
 
-> ，你可以在[開源碼](https://github.com/KHC-ZhiHao/WEB-E2E-GUI/tree/master/src/main/core/templates)中看到所有實踐案例，但自定義按鍵不含`name`與`type`。
-
 #### 輸出結果
 
 所有由`write`返回的結果都會輸出在一個`async`閉包內，因此你可以較大膽地宣告一些行為，輸出如下：
@@ -180,19 +153,17 @@ await (async () => {
 
 #### Event
 
-有些功能比較難在Node中實現，例如：多媒體，此時可以藉由`console.log('@event:{my-event}')`推播event給NWJS知道：
+有些功能比較難在Node中實現，例如：多媒體，此時可以藉由`console.log('@event:{my-event}')`推播event給瀏覽器知道：
 
 ##### play-sound
 
-推播sound要求NWJS播放聲音：
+要求播放聲音：
 
 ```js
 write(props) {
     return `console.log('@event:play-sound')`
 }
 ```
-
-> Beta階段功能較少，仍在策劃中。
 
 #### 選項列表
 

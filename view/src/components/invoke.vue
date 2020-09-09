@@ -1,6 +1,6 @@
 <template>
     <v-dialog v-model="$.dialog" persistent width="80%" scrollable>
-        <audio ref="audio" src=""></audio>
+        <audio ref="audio" src="https://www.w3schools.com/tags/horse.mp3"></audio>
         <v-card dark>
             <v-card-title :class="$.done ? ($.totalError === 0 ? 'success--text' : 'error--text') : ''">
                 {{ $.done ? `執行完畢，共計錯誤為：${$.totalError}` : `請等待執行完畢` }}

@@ -1,18 +1,25 @@
+#!/usr/bin/env node
+
+const os = require('os')
 const fs = require('fs')
 const fsx = require('fs-extra')
 const http = require('http')
 const cors = require('cors')
 const childProcess = require('child_process')
 const express = require('express')
+const program = require('commander')
 const stripAnsi = require('strip-ansi')
 const socketIo = require('socket.io')
 const jsBeautify = require('js-beautify')
 const config = require('./config.json')
 
+program.version('0.0.1').parse(process.argv)
+
 const app = express()
 const server = http.Server(app)
 const io = socketIo(server)
-const root = `./${config.root}`
+const root = `${__dirname}/${config.root}`
+const staticRoot = `${__dirname}/static`
 
 if (fs.existsSync(root) === false) {
     fs.mkdirSync(`${root}`)
@@ -21,7 +28,13 @@ if (fs.existsSync(root) === false) {
 }
 
 app.use(cors())
+app.use(express.static(staticRoot))
 app.use(express.json({ limit: '100mb' }))
+
+app.get('/', function(req, res) {
+    let html = fs.readFileSync(`${staticRoot}/index.html`)
+    res.send(html.toString())
+})
 
 app.get('/hello', function(req, res) {
     res.send('hello')
@@ -81,7 +94,7 @@ app.post('/write', function(req, res) {
 app.post('/exec', function(req, res) {
     let id = 'exec-' + Date.now().toString()
     let script = req.body.script
-    let process = childProcess.exec(script)
+    let process = childProcess.exec(`cd ${__dirname} & ${script}`)
     process.stdout.on('data', data => {
         io.emit(id, {
             type: 'data',
@@ -106,5 +119,13 @@ app.post('/beautify', function(req, res) {
 })
 
 server.listen(config.port, config.host, () => {
-    console.log(`${config.name}正在運行中: ${config.host}:${config.port}`)
+    let url = `http://${config.host}:${config.port}`
+    let platform = os.platform()
+    if (platform === 'win32') {
+        childProcess.exec(`start ${url}`)
+    }
+    if (platform === 'linux' || platform === 'darwin') {
+        childProcess.exec(`open ${url}`)
+    }
+    console.log(`${config.name}正在運行中: ${url}`)
 })

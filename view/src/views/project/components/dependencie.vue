@@ -111,6 +111,7 @@ export default defineComponent({
             $,
             remove,
             install,
+            installUI,
             addDependencie
         }
     }
