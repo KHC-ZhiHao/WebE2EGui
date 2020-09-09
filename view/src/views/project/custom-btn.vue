@@ -1,6 +1,6 @@
 <template>
     <div id="custom-btn" class="grey lighten-3 px-1" style="height: calc(100vh - 56px)">
-        <ui-app-bar :title="'自定義按鈕 - ' + $.project.name" :back="{ name: 'project' }">
+        <ui-app-bar :title="'自定義按鈕 - ' + $.project.name" :back="{ name: 'project.overview' }">
             <v-tooltip bottom>
                 <template v-slot:activator="{ on }">
                     <v-btn v-on="on" small icon href="https://github.com/KHC-ZhiHao/WEB-E2E-GUI" target="_blank">
@@ -47,7 +47,7 @@
         </v-row>
         <ui-form title="建立按鈕" ref="create">
             <v-alert dense outlined type="error">為了確保測試不會造成依賴失敗，建立後無法刪除按鈕</v-alert>
-            <v-text-field v-model="$.createName" label="名稱" outlined :rules="$alas.rules(['#ms.required'])"></v-text-field>
+            <v-text-field v-model="$.createName" label="名稱" outlined :rules="$.alas.rules(['#ms.required'])"></v-text-field>
         </ui-form>
     </div>
 </template>
@@ -55,10 +55,11 @@
 <script lang="ts">
 import core from '@/core'
 import { beautify } from '@/requests'
-import { status } from '@/alas'
+import { alas, status, action } from '@/alas'
 import { Self, RefComponent } from '@/vue-core'
 import { defineComponent, reactive, onUnmounted, ref } from '@vue/composition-api'
 export default defineComponent({
+    props: {},
     setup(props, context) {
 
         let self = new Self(context)
@@ -78,6 +79,7 @@ export default defineComponent({
         //
 
         let $ = reactive({
+            alas,
             project: status.fetch('project'),
             target: null,
             compile: null,
@@ -140,7 +142,7 @@ export default defineComponent({
         let createBtn = () => {
             create.value.open(async() => {
                 if ($.project.customBtns.fetch($.createName)) {
-                    alert('按鈕已經存在')
+                    action.message('error', '相同名稱按鈕已經存在')
                 } else {
                     $.project.customBtns.write({
                         name: $.createName,

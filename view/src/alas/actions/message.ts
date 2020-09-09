@@ -28,7 +28,7 @@ export const Options: IModelOptions<Model, List> = {
     methods: {
         push(self, type, message) {
             self.toasts.push({
-                time: 100,
+                time: 5,
                 type: type,
                 remove: false,
                 clicked: false,

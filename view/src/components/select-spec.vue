@@ -64,6 +64,7 @@
 import { status } from '@/alas'
 import { defineComponent, reactive } from '@vue/composition-api'
 export default defineComponent({
+    props: {},
     setup() {
 
         // =================

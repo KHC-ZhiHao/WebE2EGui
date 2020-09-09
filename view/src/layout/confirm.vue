@@ -5,7 +5,7 @@
             <v-card-title>
                 <span class="headline">{{ $.confirm.title }}</span>
             </v-card-title>
-            <v-btn class="mt-2" tile block color="accent" @click="$.confirm.$self.confirm()">確定</v-btn>
+            <v-btn class="mt-2" tile block color="accent" @click="$.confirm.$self.confirm">確定</v-btn>
         </v-card>
     </v-dialog>
 </div>
@@ -15,6 +15,7 @@
 import { status } from '@/alas'
 import { defineComponent, reactive } from '@vue/composition-api'
 export default defineComponent({
+    props: {},
     setup() {
 
         // =================

@@ -31,6 +31,11 @@ const routes: RouteConfig[] = [
                 component: () => import('@/views/project/overview.vue')
             },
             {
+                path: 'custombtn',
+                name: 'project.custombtn',
+                component: () => import('@/views/project/custom-btn.vue')
+            },
+            {
                 path: 'specs/:id',
                 name: 'project.specs',
                 component: () => import('@/views/project/specs.vue')

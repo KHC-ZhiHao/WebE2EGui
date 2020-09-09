@@ -89,18 +89,16 @@
 import core from '@/core'
 import * as Step from '@/alas/project/step'
 import * as Template from '@/alas/project/template'
-import { Self, RefElement } from '@/vue-core'
-import { alas, status } from '@/alas'
-import { defineComponent, reactive, onMounted, watch, ref, PropType, computed } from '@vue/composition-api'
+import { RefElement } from '@/vue-core'
+import { status } from '@/alas'
+import { defineComponent, reactive, watch, ref, PropType, computed } from '@vue/composition-api'
 export default defineComponent({
     props: {
         step: Object as PropType<Step.Model>,
         index: Number,
         template: Object as PropType<Template.Model>
     },
-    setup(props, context) {
-
-        let self = new Self(context)
+    setup(props) {
 
         // =================
         //

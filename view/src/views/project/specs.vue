@@ -67,12 +67,12 @@
                     <v-btn icon small class="mx-1" @click="removeStep(step.id)">
                         <v-icon>mdi-delete</v-icon>
                     </v-btn>
-                    <!-- <v-btn icon small class="mx-1" @click="pasteStep({ spec, index: index + 1 })" v-if="copyStepUnit">
+                    <v-btn icon small class="mx-1" @click="pasteStep({ spec: $.spec, index: index + 1 })" v-if="canPasteStep">
                         <v-icon>mdi-content-paste</v-icon>
                     </v-btn>
                     <v-btn icon small class="mx-1" @click="copyStep(step)">
                         <v-icon>mdi-content-copy</v-icon>
-                    </v-btn> -->
+                    </v-btn>
                     <v-btn icon small class="mx-1" @click="$.spec.steps.methods.indexUp(index)">
                         <v-icon>mdi-chevron-down</v-icon>
                     </v-btn>
@@ -81,7 +81,9 @@
                     </v-btn>
                 </v-toolbar>
                 <div class="py-4">
-                    <v-btn v-if="step.templates.size === 0" @click="openCreateTemplate(step, -1)" outlined block>建立第一個模板</v-btn>
+                    <v-btn v-if="step.templates.size === 0" @click="openCreateTemplate(step, -1)" outlined block>
+                        建立第一個模板
+                    </v-btn>
                     <self-template
                         @add="openCreateTemplate"
                         @help="openHelp"
@@ -96,7 +98,9 @@
                     </self-template>
                 </div>
             </div>
-            <!-- <v-btn block light @click="pasteStep({ spec: $.spec, index: $.spec.steps.length })" v-if="copyStepUnit">貼上步驟</v-btn> -->
+            <v-btn block light @click="pasteStep({ spec: $.spec, index: $.spec.steps.length })" v-if="canPasteStep">
+                貼上步驟
+            </v-btn>
         </div>
         <ui-form title="加入步驟" ref="create">
             <v-text-field
@@ -118,7 +122,7 @@
         <v-dialog v-model="$.variable" max-width="800px">
             <self-variable :project="$.project"></self-variable>
         </v-dialog>
-        <v-card v-if="$.write" style="position: fixed; bottom: 0; width: 100vw;">
+        <v-card v-if="$.write" style="position: fixed; bottom: 0; width: 100vw; z-index: 100">
             <v-card-title>
                 輸出程式碼
                 <v-spacer></v-spacer>
@@ -203,6 +207,10 @@ export default defineComponent({
         // computed
         //
 
+        let canPasteStep = computed(() => {
+            return $.copy.step != null
+        })
+
         let specs = computed(() => {
             return $.project.specs.items.filter(s => s.id !== $.spec.id).map(s => {
                 return {
@@ -257,9 +265,9 @@ export default defineComponent({
             })
         }
 
-        let openTemplateEdit = (id) => {
+        let openTemplateEdit = (index) => {
             setTimeout(() => {
-                templates[id].edit = true
+                templates.value[index + 1].$.edit = true
             }, 100)
         }
 
@@ -274,6 +282,15 @@ export default defineComponent({
 
         let copyCode = () => {
             copy($.writeContent)
+            action.message('success', '已複製到剪貼簿')
+        }
+
+        let copyStep = (step) => {
+            $.copy.$m.copyStep(step)
+        }
+
+        let pasteStep = ({ spec, index }) => {
+            $.copy.$m.pasteStep({ spec, index })
         }
 
         // =================
@@ -298,7 +315,10 @@ export default defineComponent({
             update,
             invoke,
             createTemplate,
-            templates
+            templates,
+            copyStep,
+            canPasteStep,
+            pasteStep
         }
     }
 })

@@ -25,6 +25,7 @@ import Confirm from '@/layout/confirm.vue'
 import Message from '@/layout/message.vue'
 import { defineComponent, onMounted, reactive } from '@vue/composition-api'
 export default defineComponent({
+    props: {},
     components: {
         'self-confirm': Confirm,
         'self-message': Message

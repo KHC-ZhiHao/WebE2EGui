@@ -27,6 +27,7 @@ import { Self } from '@/vue-core'
 import { status } from '@/alas'
 import { defineComponent, reactive } from '@vue/composition-api'
 export default defineComponent({
+    props: {},
     setup(props, context) {
 
         let self = new Self(context)

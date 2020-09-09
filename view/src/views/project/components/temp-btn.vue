@@ -30,11 +30,11 @@
                         新增自訂按鈕
                     </v-btn>
                 </div>
-                <!-- <div class="mb-3" v-if="copyTemplates.length > 0">
+                <div class="mb-3" v-if="$.copy.templates.length > 0">
                     <div class="mb-3" style="font-size: 18px">剪貼簿</div>
-                    <v-toolbar dense class="elevation-1" v-for="(template, index) of copyTemplates" :key="template.id + 'key'">
-                        <v-card :color="$core.templates[template.name].color">&nbsp;</v-card>
-                        <span class="ml-3">{{ $core.templates[template.name].display(template.props) }}</span>
+                    <v-toolbar dense class="elevation-1" v-for="(template, index) of $.copy.templates" :key="template.id + 'key'">
+                        <v-card width="5px" height="25px" :color="$.core.templates[template.name].color"></v-card>
+                        <span class="ml-3">{{ $.core.templates[template.name].display(template.props) }}</span>
                         <v-spacer></v-spacer>
                         <v-btn icon @click="removeTemplate(index)">
                             <v-icon>mdi-trash-can-outline</v-icon>
@@ -43,7 +43,7 @@
                             <v-icon>mdi-content-paste</v-icon>
                         </v-btn>
                     </v-toolbar>
-                </div> -->
+                </div>
             </v-card-text>
         </v-card>
     </v-dialog>
@@ -53,7 +53,7 @@
 import core from '@/core'
 import { Self } from '@/vue-core'
 import { alas, status } from '@/alas'
-import { defineComponent, reactive, onMounted } from '@vue/composition-api'
+import { defineComponent, reactive } from '@vue/composition-api'
 export default defineComponent({
     props: {},
     setup(props, context) {
@@ -111,7 +111,7 @@ export default defineComponent({
                 props[key] = template.props[key].default
             }
             $.dialog = false
-            $.step.templates.once('$writeSuccess', (step, context, { key }) => self.emit('add', key))
+            $.step.templates.once('$writeSuccess', () => self.emit('add', $.index))
             $.step.templates.write({
                 name,
                 props
@@ -129,6 +129,10 @@ export default defineComponent({
             $.dialog = false
         }
 
+        let removeTemplate = (index: number) => {
+            $.copy.$m.removeTemplate(index)
+        }
+
         // =================
         //
         // done
@@ -139,7 +143,8 @@ export default defineComponent({
             open,
             getTypeName,
             addTemplate,
-            // addPasteTemplate
+            addPasteTemplate,
+            removeTemplate
         }
     }
 })
