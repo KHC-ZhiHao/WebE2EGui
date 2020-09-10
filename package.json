@@ -1,6 +1,6 @@
 {
   "name": "web-e2e-gui",
-  "version": "0.0.2",
+  "version": "0.0.1",
   "description": "有介面的web e2e測試",
   "main": "index.js",
   "scripts": {
