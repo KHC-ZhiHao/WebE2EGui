@@ -39,11 +39,9 @@ export interface Model extends IModel {
     $v: {
         tag: 'project'
         output: Output
-        lockDependencies: string[]
         projectPath: string
     }
     $m: {
-        isLockDependencies: (dependencie: string) => boolean
         validate: () => any
         zip: () => any
         getOutputFiles: (specs?: string[]) => any
@@ -111,9 +109,6 @@ export const Options: IModelOptions<Model, List> = {
         },
         projectPath(self) {
             return `${config.projectDir}/${self.name}.json`
-        },
-        lockDependencies() {
-            return ['request-promise']
         }
     },
     methods: {
@@ -145,7 +140,9 @@ export const Options: IModelOptions<Model, List> = {
                 },
                 specs: self.specs.items.filter(s => specs ? specs.includes(s.id) : true).map(s => s.name + '.js')
             }
-            let devDependencies = {}
+            let devDependencies = {
+                axios: '0.20.0'
+            }
             let packageOptions = {
                 scripts: {
                     test: `protractor "./config.js"`
@@ -169,9 +166,6 @@ export const Options: IModelOptions<Model, List> = {
                 specsItems,
                 packageOptions: JSON.stringify(packageOptions, null, 4)
             }
-        },
-        isLockDependencies(self, dependencie) {
-            return self.$v.lockDependencies.includes(dependencie)
         },
         validate(self) {
             let output = []

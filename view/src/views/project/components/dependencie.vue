@@ -18,7 +18,6 @@
                 class="mt-3 mx-0">
                 <v-col cols="5" class="mr-2">
                     <v-text-field
-                        :disabled="project.$m.isLockDependencies(dependencie.name)"
                         dense
                         outlined
                         hide-details
@@ -28,7 +27,6 @@
                 </v-col>
                 <v-col cols="5" class="mr-2">
                     <v-text-field
-                        :disabled="project.$m.isLockDependencies(dependencie.name)"
                         dense
                         outlined
                         hide-details
@@ -39,7 +37,7 @@
                 <v-col cols="1">
                     <v-tooltip bottom>
                         <template v-slot:activator="{ on }">
-                            <v-btn v-on="on" :disabled="project.$m.isLockDependencies(dependencie.name)" outlined @click="remove(dependencie.id)">
+                            <v-btn v-on="on" outlined @click="remove(dependencie.id)">
                                 刪除
                             </v-btn>
                         </template>

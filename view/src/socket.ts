@@ -15,10 +15,11 @@ class Socket {
 
     async exec(script: string, callback: (type: 'data' | 'exit', data: any) => void) {
         let { data } = await axios.post('exec', { script })
-        let channel = this.io.on(data.id, ({ type, data }) => {
+        let { id } = data
+        let channel = this.io.on(id, ({ type, data }) => {
             if (type === 'exit') {
                 callback('exit', null)
-                channel.close()
+                channel.off(id)
             } else {
                 callback('data', data)
             }

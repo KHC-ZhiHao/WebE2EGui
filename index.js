@@ -31,13 +31,9 @@ app.use(cors())
 app.use(express.static(staticRoot))
 app.use(express.json({ limit: '100mb' }))
 
-app.get('/', function(req, res) {
+app.get('*', function(req, res) {
     let html = fs.readFileSync(`${staticRoot}/index.html`)
     res.send(html.toString())
-})
-
-app.get('/hello', function(req, res) {
-    res.send('hello')
 })
 
 app.post('/read', function(req, res) {
@@ -94,6 +90,9 @@ app.post('/write', function(req, res) {
 app.post('/exec', function(req, res) {
     let id = 'exec-' + Date.now().toString()
     let script = req.body.script
+    res.json({
+        id
+    })
     let process = childProcess.exec(`cd ${__dirname} & ${script}`)
     process.stdout.on('data', data => {
         io.emit(id, {
@@ -104,9 +103,6 @@ app.post('/exec', function(req, res) {
     process.on('exit', () => io.emit(id, {
         type: 'exit'
     }))
-    res.json({
-        id
-    })
 })
 
 app.post('/beautify', function(req, res) {

@@ -14,6 +14,8 @@ export default defineComponent({
 
         let self = new Self(context)
 
+        self.timer('save', 1000, () => $.project.$o.save.start())
+
         // =================
         //
         // state
