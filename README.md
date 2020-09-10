@@ -15,7 +15,7 @@
 
 ## Summary
 
-WEG(WEB-E2E-GUI)是以[Protractor](https://www.protractortest.org/)為底層的可介面操作E2E測試工具。
+WEB-E2E-GUI是以[Protractor](https://www.protractortest.org/)為主的可介面操作E2E測試工具。
 
 目標與定位是在中小型專案，大多是人手不足的情況下(大多時候專案只有兩位人員)能夠平均分擔QA的部分，
 
@@ -38,6 +38,13 @@ WEG有以下特點：
 WEG仍是較為工程師導向的工具，你必須安裝[NodeJs](https://nodejs.org/en/)才能正常運作。
 
 > 我們必須藉由Node安裝Protractor與相關依賴進行測試運作。
+
+```bash
+# 安裝
+npm install
+# 執行
+weg
+```
 
 ---
 
