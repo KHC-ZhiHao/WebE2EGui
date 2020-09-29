@@ -4,7 +4,7 @@
   "description": "有介面的web e2e測試",
   "main": "index.js",
   "scripts": {
-    "link": "cd view & npm run build & cd .. && npm link",
+    "link": "cd view & npm run build & cd .. && npm link --force",
     "publish": "cd view & npm run build & cd .. & npm publish"
   },
   "bin": {

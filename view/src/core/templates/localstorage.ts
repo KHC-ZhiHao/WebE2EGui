@@ -53,10 +53,10 @@ export default {
             return `await browser.executeScript('window.localStorage.clear();')`
         }
         if (mode === 'write') {
-            return `await browser.executeScript('window.localStorage.setItem('${key}', '${value}');')`
+            return `await browser.executeScript('window.localStorage.setItem(\`${key}\`, \`${value}\`);')`
         }
         if (mode === 'remove') {
-            return `await browser.executeScript('window.localStorage.removeItem('${key}');')`
+            return `await browser.executeScript('window.localStorage.removeItem("${key}");')`
         }
     }
 }

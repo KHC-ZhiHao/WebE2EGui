@@ -265,9 +265,16 @@ export default defineComponent({
             })
         }
 
-        let openTemplateEdit = (index) => {
+        let openTemplateEdit = (index, step) => {
             setTimeout(() => {
-                templates.value[index + 1].$.edit = true
+                let start = 0
+                for (let template of templates.value) {
+                    if (template.step === step) {
+                        templates.value[start + index + 1].$.edit = true
+                        break
+                    }
+                    start += 1
+                }
             }, 100)
         }
 
