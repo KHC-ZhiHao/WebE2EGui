@@ -23,5 +23,6 @@ core.addTemplate(require('./templates/refresh').default)
 core.addTemplate(require('./templates/localstorage').default)
 core.addTemplate(require('./templates/back').default)
 core.addTemplate(require('./templates/forward').default)
+core.addTemplate(require('./templates/verify-has').default)
 
 export default core
