@@ -1,8 +1,11 @@
-export default {
-    name: 'polling',
-    type: 'verify',
-    btnText: '輪詢',
-    info: '等待直到條件符合為止',
+import { defineTemplate } from '../define'
+
+const help = `
+    ### 輪詢
+    等待直到條件符合為止，等待時間過長代表錯誤。
+`
+
+export default defineTemplate({
     props: {
         selector: {
             type: 'radio-group',
@@ -17,11 +20,11 @@ export default {
                     value: 'query'
                 },
                 {
-                    text: 'page-count',
+                    text: '分頁數量',
                     value: 'page-count'
                 },
                 {
-                    text: 'URL',
+                    text: '網址(URL)',
                     value: 'URL'
                 }
             ],
@@ -32,11 +35,11 @@ export default {
             info: '條件',
             options: [
                 {
-                    text: 'like',
+                    text: '包含',
                     value: 'like'
                 },
                 {
-                    text: 'unlike',
+                    text: '不包含',
                     value: 'unlike'
                 },
                 {
@@ -69,49 +72,68 @@ export default {
             default: '0'
         }
     },
-    color: 'brown darken-1',
-    display({ selector, mode, value, timeout, target, index }) {
-        let modeText = mode === 'greater' ? '>=' : mode
-        return `在 ${timeout} 毫秒內輪詢 ${selector} ${target}${selector === 'query' ? '(' + index + ')' : ''} ${modeText} ${value}`
-    },
-    write({ selector, mode, value, timeout, target, index }) {
-        let select = ''
-        let condition = ''
-        if (selector === 'name') {
-            select = `let result = await element(by.name('${target}')).getAttribute('value')`
-        }
-        if (selector === 'query') {
-            select = `let result = await (awaut $$('${target}'))[${index}].getAttribute('value')`
-        }
-        if (selector === 'URL') {
-            select = `let result = await browser.getCurrentUrl()`
-        }
-        if (mode === 'like') {
-            condition = `
-                if (result.toString().match('${value}')) {
-                    return true
-                }
+    template: {
+        help,
+        name: 'polling',
+        type: 'verify',
+        btnText: '輪詢',
+        info: '等待直到條件符合為止',
+        color: 'brown darken-1',
+        display({ selector, mode, value, timeout, target, index }) {
+            let modeText = mode === 'greater' ? '>=' : mode
+            return `在 ${timeout} 毫秒內輪詢 ${selector} ${target}${selector === 'query' ? '(' + index + ')' : ''} ${modeText} ${value}`
+        },
+        validate({ timeout, target, index }) {
+            if (isNaN(Number(timeout))) {
+                return '超時時間必須為數字'
+            }
+            if (target === '') {
+                return '目標不存在'
+            }
+            if (isNaN(Number(index))) {
+                return '第幾個必須為數字'
+            }
+            return true
+        },
+        write({ selector, mode, value, timeout, target, index }) {
+            let select = ''
+            let condition = ''
+            if (selector === 'name') {
+                select = `let result = await element(by.name('${target}')).getAttribute('value')`
+            }
+            if (selector === 'query') {
+                select = `let result = await (awaut $$('${target}'))[${index}].getAttribute('value')`
+            }
+            if (selector === 'URL') {
+                select = `let result = await browser.getCurrentUrl()`
+            }
+            if (mode === 'like') {
+                condition = `
+                    if (result.toString().match('${value}')) {
+                        return true
+                    }
+                `
+            }
+            if (mode === 'unlike') {
+                condition = `
+                    if (!result.toString().match('${value}')) {
+                        return true
+                    }
+                `
+            }
+            if (mode === 'greater') {
+                condition = `
+                    if (result.toString().length >= ${value}) {
+                        return true
+                    }
+                `
+            }
+            return `
+                await browser.wait(async() => {
+                    ${select}
+                    ${condition}
+                }, ${timeout}, 'error')
             `
         }
-        if (mode === 'unlike') {
-            condition = `
-                if (!result.toString().match('${value}')) {
-                    return true
-                }
-            `
-        }
-        if (mode === 'greater') {
-            condition = `
-                if (result.toString().length >= ${value}) {
-                    return true
-                }
-            `
-        }
-        return `
-            await browser.wait(async() => {
-                ${select}
-                ${condition}
-            }, ${timeout}, 'error')
-        `
     }
-}
+})

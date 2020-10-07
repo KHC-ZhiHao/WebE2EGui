@@ -1,12 +1,15 @@
-export default {
-    name: 'verify-has',
-    type: 'verify',
-    btnText: '存在',
-    info: '是否存在',
+import { defineTemplate } from '../define'
+
+const help = `
+    ### 驗證 Element 是否存在
+    指定 Element Name 屬性，驗證是否存在與否。
+`
+
+export default defineTemplate({
     props: {
         target: {
             type: 'text',
-            info: '名稱',
+            info: 'Element Name',
             default: ''
         },
         verifyType: {
@@ -25,16 +28,29 @@ export default {
             default: 'yes'
         }
     },
-    color: 'brown darken-1',
-    display({ target, verifyType }) {
-        return `驗證 ${target} ${verifyType === 'yes' ? '必須存在' : '不該存在'}`
-    },
-    write({ target, verifyType }) {
-        let unit = `await browser.isElementPresent(element(by.name('${target}')))`
-        if (verifyType === 'no') {
-            return `await expect(${unit}).toBe(false)`
-        } else {
-            return `await expect(${unit}).toBe(true)`
+    template: {
+        help,
+        name: 'verify-has',
+        type: 'verify',
+        btnText: '存在',
+        info: '是否存在',
+        color: 'brown darken-1',
+        display({ target, verifyType }) {
+            return `驗證 ${target} ${verifyType === 'yes' ? '必須存在' : '不該存在'}`
+        },
+        validate({ target }) {
+            if (target === '') {
+                return '目標不存在'
+            }
+            return true
+        },
+        write({ target, verifyType }) {
+            let unit = `await browser.isElementPresent(element(by.name('${target}')))`
+            if (verifyType === 'no') {
+                return `await expect(${unit}).toBe(false)`
+            } else {
+                return `await expect(${unit}).toBe(true)`
+            }
         }
     }
-}
+})
