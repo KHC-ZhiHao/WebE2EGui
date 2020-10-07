@@ -1,3 +1,7 @@
+import { defineTemplate } from './define'
+
+type Template = ReturnType<typeof defineTemplate>
+
 class Core {
     templates: { [key: string]: any } = {}
     types = ['action', 'system', 'verify', 'engineer', 'custom']
@@ -18,7 +22,7 @@ class Core {
         this.addTemplate(template, true)
     }
 
-    addTemplate(data, custom = false) {
+    addTemplate(data: Template, custom = false) {
         try {
             let result = this.verifyTemplate(data)
             result.custom = custom

@@ -1,52 +1,80 @@
-import selector from './cases/selector'
+import { props, display, validate } from '../mixins/selector'
+import { defineTemplate } from '../define'
 
-export default {
-    name: 'verify',
-    type: 'verify',
-    btnText: '驗證文本',
-    info: '驗證參數',
-    props: {
-        ...selector.props,
-        verifyType: {
+const help = `
+    ### 驗證指定的Element內文是否符合需求
+    * 方法如選項所見
+`
+
+const modeOptions = [
+    {
+        text: '應該是',
+        value: 'yes'
+    },
+    {
+        text: '不應該是',
+        value: 'no'
+    },
+    {
+        text: '包含',
+        value: 'like'
+    },
+    {
+        text: '不包含',
+        value: 'no-like'
+    }
+]
+
+export default defineTemplate({
+    props: Object.assign(props, {
+        mode: {
             type: 'radio-group',
-            info: '選擇',
-            options: [
-                {
-                    text: '應該是',
-                    value: 'yes'
-                },
-                {
-                    text: '不應該是',
-                    value: 'no'
-                }
-            ],
+            info: '條件',
+            options: modeOptions,
             default: 'yes'
         },
         verify: {
             type: 'text',
-            info: '目標',
+            info: '驗證文本',
             default: ''
-        }
-    },
-    color: 'brown darken-1',
-    display(props) {
-        return `驗證 ${selector.display(props)} ${props.verifyType === 'no' ? '不應該是' : '應該是'} ${props.verify}`
-    },
-    validate(props) {
-        return selector.validate(props)
-    },
-    write({ target, verifyType, verify, selector, index }) {
-        let unit = ''
-        if (selector === 'name') {
-            unit = `element(by.name('${target}')).getText()`
-        }
-        if (selector === 'query') {
-            unit = `await (await $$('${target}'))[${index}].getText()`
-        }
-        if (verifyType === 'no') {
-            return `await expect(${unit}).not.toEqual('${verify}')`
-        } else {
-            return `await expect(${unit}).toEqual('${verify}')`
+        },
+    }),
+    template: {
+        name: 'verify',
+        type: 'verify',
+        btnText: '驗證文本',
+        info: '驗證參數',
+        help,
+        color: 'brown darken-1',
+        display({ target, mode, verify, selector, index }) {
+            let { text } = modeOptions.find(e => e.value === mode)
+            return `驗證 ${display({ selector, target, index })} ${text} ${verify}`
+        },
+        validate({ selector, index }) {
+            return validate({ selector, index })
+        },
+        write({ target, mode, verify, selector, index }) {
+            let type = ''
+            let unit = ''
+            if (selector === 'name') {
+                unit = `element(by.name('${target}')).getText()`
+            }
+            if (selector === 'query') {
+                unit = `await (await $$('${target}'))[${index}].getText()`
+            }
+            if (mode === 'no') {
+                type = 'not.toEqual'
+            }
+            if (mode === 'yes') {
+                type = 'toEqual'
+            }
+            if (mode === 'like') {
+                type = 'toMatch'
+            }
+            if (mode === 'no-like') {
+                type = 'not.toMatch'
+            }
+            return `await expect(${unit}).${mode}('${verify}')`
         }
     }
-}
+})

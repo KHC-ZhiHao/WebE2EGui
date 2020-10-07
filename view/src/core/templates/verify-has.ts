@@ -25,7 +25,7 @@ export default {
             default: 'yes'
         }
     },
-    color: 'orange lighten-1',
+    color: 'brown darken-1',
     display({ target, verifyType }) {
         return `驗證 ${target} ${verifyType === 'yes' ? '必須存在' : '不該存在'}`
     },

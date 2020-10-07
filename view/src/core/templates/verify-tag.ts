@@ -10,7 +10,7 @@ export default {
             default: '1'
         }
     },
-    color: 'red darken-1',
+    color: 'brown darken-1',
     display({ value }) {
         return `驗證標籤數量為 ${value}`
     },

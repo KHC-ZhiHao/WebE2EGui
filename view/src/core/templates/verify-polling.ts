@@ -69,7 +69,7 @@ export default {
             default: '0'
         }
     },
-    color: 'teal lighten-2',
+    color: 'brown darken-1',
     display({ selector, mode, value, timeout, target, index }) {
         let modeText = mode === 'greater' ? '>=' : mode
         return `在 ${timeout} 毫秒內輪詢 ${selector} ${target}${selector === 'query' ? '(' + index + ')' : ''} ${modeText} ${value}`

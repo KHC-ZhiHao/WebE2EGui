@@ -15,7 +15,7 @@ export default {
             default: '1'
         }
     },
-    color: 'lime darken-2',
+    color: 'brown darken-1',
     display({ selector, count }) {
         return `驗證 ${selector} 有 ${count} 個`
     },
