@@ -7,6 +7,9 @@ import VerifyTag from './templates/verify-tag'
 import VerifyCount from './templates/verify-count'
 import VerifyPolling from './templates/verify-polling'
 
+import ActionSelect from './templates/action-select'
+import ActionSetPath from './templates/action-set-path'
+
 const core = new Core()
 
 core.addTemplate(Wait)
@@ -16,5 +19,8 @@ core.addTemplate(VerifyTag)
 core.addTemplate(VerifyHas)
 core.addTemplate(VerifyCount)
 core.addTemplate(VerifyPolling)
+
+core.addTemplate(ActionSelect)
+core.addTemplate(ActionSetPath)
 
 export default core

@@ -26,7 +26,7 @@ const modeOptions = [
 ]
 
 export default defineTemplate({
-    props: Object.assign(props, {
+    props: Object.assign({
         mode: {
             type: 'radio-group',
             info: '條件',
@@ -38,7 +38,7 @@ export default defineTemplate({
             info: '驗證文本',
             default: ''
         },
-    }),
+    }, props),
     template: {
         name: 'verify',
         type: 'verify',
