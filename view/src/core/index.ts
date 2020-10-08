@@ -7,6 +7,7 @@ import VerifyTag from './templates/verify-tag'
 import VerifyCount from './templates/verify-count'
 import VerifyPolling from './templates/verify-polling'
 
+import ActionClear from './templates/action-clear'
 import ActionSelect from './templates/action-select'
 import ActionSetPath from './templates/action-set-path'
 
@@ -20,6 +21,7 @@ core.addTemplate(VerifyHas)
 core.addTemplate(VerifyCount)
 core.addTemplate(VerifyPolling)
 
+core.addTemplate(ActionClear)
 core.addTemplate(ActionSelect)
 core.addTemplate(ActionSetPath)
 
