@@ -64,7 +64,7 @@ export default {
     },
     write({ method, uri, headers, body, query, response }) {
         if (method === 'get' || method === 'delete') {
-            return `
+            return /* javascript */`
                 try {
                     let axios = require('axios')
                     let result = await axios['${method}']('${uri}', {
@@ -77,7 +77,7 @@ export default {
                 }
             `
         } else {
-            return `
+            return /* javascript */`
                 try {
                     let axios = require('axios')
                     let result = await axios['${method}']('${uri}', ${body}, {
