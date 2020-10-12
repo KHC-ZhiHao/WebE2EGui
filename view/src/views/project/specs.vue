@@ -73,10 +73,10 @@
                     <v-btn icon small class="mx-1" @click="copyStep(step)">
                         <v-icon>mdi-content-copy</v-icon>
                     </v-btn>
-                    <v-btn icon small class="mx-1" @click="$.spec.steps.methods.indexUp(index)">
+                    <v-btn icon small class="mx-1" @click="stepIndexUp(index)">
                         <v-icon>mdi-chevron-down</v-icon>
                     </v-btn>
-                    <v-btn icon small class="mx-1" @click="$.spec.steps.methods.indexDown(index)">
+                    <v-btn icon small class="mx-1" @click="stepIndexDown(index)">
                         <v-icon>mdi-chevron-up</v-icon>
                     </v-btn>
                 </v-toolbar>
@@ -156,7 +156,7 @@ import Help from './components/help.vue'
 import TempBtn from './components/temp-btn.vue'
 import Template from './components/template.vue'
 import Variable from './components/variable.vue'
-import { copy } from '@/utils'
+import { copy, indexUp, indexDown } from '@/utils'
 import { Self, RefComponentArray, RefComponent } from '@/vue-core'
 import { beautify } from '@/requests'
 import { alas, status, action } from '@/alas'
@@ -300,6 +300,14 @@ export default defineComponent({
             $.copy.$m.pasteStep({ spec, index })
         }
 
+        let stepIndexUp = (index) => {
+            indexUp($.spec.steps, index)
+        }
+
+        let stepIndexDown = (index) => {
+            indexDown($.spec.steps, index)
+        }
+
         // =================
         //
         // done
@@ -325,7 +333,9 @@ export default defineComponent({
             templates,
             copyStep,
             canPasteStep,
-            pasteStep
+            pasteStep,
+            stepIndexUp,
+            stepIndexDown
         }
     }
 })
