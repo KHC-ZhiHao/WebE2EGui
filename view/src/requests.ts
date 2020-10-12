@@ -1,10 +1,23 @@
 import Axios from 'axios'
+import { action } from '@/alas'
 import { getConfig } from '@/utils'
 
+let code = Date.now()
 let { host, port } = getConfig()
 
 export const axios = Axios.create({
     baseURL: `http://${host}:${port}/`
+})
+axios.interceptors.request.use(
+    config => {
+        config.headers['code'] = code
+        return config
+    }
+)
+
+axios.interceptors.response.use(async response => response, error => {
+    action.message('error', error.response.data.error)
+    return Promise.reject(error)
 })
 
 export async function remove(name: string) {

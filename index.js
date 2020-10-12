@@ -27,9 +27,30 @@ if (fs.existsSync(root) === false) {
     fs.mkdirSync(`${root}/${config.releaseDir}`)
 }
 
+let nowCode = 0
+
 app.use(cors())
 app.use(express.static(staticRoot))
 app.use(express.json({ limit: '100mb' }))
+app.use(function (req, res, next) {
+    let code = Number(req.headers.code)
+    if (!req.headers.code) {
+        return next()
+    }
+    if (code === nowCode) {
+        return next()
+    }
+    if (code > nowCode) {
+        nowCode = code
+        return next()
+    }
+    else {
+        res.statusCode = '422'
+        res.json({
+            error: '你同時啟用了兩個視窗'
+        })
+    }
+})
 
 app.get('*', function(req, res) {
     let html = fs.readFileSync(`${staticRoot}/index.html`)

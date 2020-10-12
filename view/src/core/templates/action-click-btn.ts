@@ -17,7 +17,7 @@ export default defineTemplate({
         help,
         name: 'click-btn',
         type: 'action',
-        btnText: '點擊按鈕',
+        btnText: '點擊指定文字',
         info: '點擊符合文字的按鈕',
         color: 'teal lighten-2',
         display({ value }) {
