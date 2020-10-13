@@ -1,6 +1,6 @@
 <p align="center"><img src="./images/logo.png"></p>
 
-<p align="center" style="font-size:2em">The Beta Now</p>
+<p align="center" style="font-size:2em">可介面操作 E2E 測試工具</p>
 
 <br>
 
@@ -15,19 +15,19 @@
 
 ## Summary
 
-WEB-E2E-GUI是以[Protractor](https://www.protractortest.org/)為主的可介面操作E2E測試工具。
+WEB-E2E-GUI 是以[Protractor](https://www.protractortest.org/)為主的可介面操作 E2E 測試工具。
 
-目標與定位是在中小型專案，大多是人手不足的情況下(大多時候專案只有兩位人員)能夠平均分擔QA的部分，
+目標與定位是在中小型專案，大多是人手不足的情況下(大多時候專案只有兩位人員)能夠平均分擔 QA 的部分，
 
-如果是大型專案或有專門進行QA的團隊基本上可以無視本工具。
+如果是大型專案或有專門進行 QA 的團隊基本上可以無視本工具。
 
 WEG有以下特點：
 
 1. 能夠輸出序列化檔案，利於工程師與其他專案管理人員交流。
 
-2. 最終結果仍是輸出`Protractor`專案，就算捨棄GUI工具也能擁有原生的E2E測試檔案。
+2. 最終結果仍是輸出 `Protractor` 專案，就算捨棄 GUI 工具也能擁有原生的 E2E 測試檔案。
 
-3. 進行測試時可以看到美麗的測試Log。
+3. 進行測試時可以看到美麗的測試 Log。
 
 4. 可視化與可自定義操作的按鈕介面。
 
@@ -35,13 +35,11 @@ WEG有以下特點：
 
 ## 安裝
 
-WEG仍是較為工程師導向的工具，你必須安裝[NodeJs](https://nodejs.org/en/)才能正常運作。
-
-> 我們必須藉由Node安裝Protractor與相關依賴進行測試運作。
+WEG仍是較為工程師導向的工具，你必須安裝 [NodeJs](https://nodejs.org/en/) 才能正常運作。
 
 ```bash
 # 安裝
-npm install
+npm install web-e2e-gui -g
 # 執行
 weg
 ```
@@ -52,17 +50,17 @@ weg
 
 ### JavaScript
 
-雖然盡可能的使用可視化按鍵來操作，但不用幻想不會JavaScript也能暢用WEG，沒有Node的操作經驗大概在安裝就會卡關。
+雖然盡可能的使用可視化按鍵來操作，但不用幻想不會 JavaScript 也能暢用 WEG，沒有 Node 的操作經驗大概在安裝就會卡關。
 
 ### Protractor
 
-由於所有的程式碼都在`Protractor(jasmine)`中執行，理解其判斷方式與邏輯有助於寫出良好的測試。
+由於所有的程式碼都在 `Protractor(jasmine)` 中執行，理解其判斷方式與邏輯有助於寫出良好的測試。
 
-> `Protractor`是源於`Angular`的測試工具，但本工具只借用其自動化測試功能，在運行時會關閉`Angular`的檢測。
+> `Protractor` 是源於 `Angular` 的測試工具，但本工具只借用其自動化測試功能，在運行時會關閉 `Angular` 的檢測。
 
 ### 邏輯測試應該通通由Javascript編寫
 
-有時候需要複雜的邏輯驗證，建議直接編寫JavaScript，因此建議由工程師先行編寫測試，再由其他專案負責人補足應用方的應用操作。
+有時候需要複雜的邏輯驗證，建議直接編寫 JavaScript，因此建議由工程師先行編寫測試，再由其他專案負責人補足應用方的應用操作。
 
 ---
 
@@ -70,7 +68,7 @@ weg
 
 ### 應用Store
 
-所有的`Spec`中都有一個全局且獨立的store物件，可以藉由該物件進行誇模板的測試：
+所有的`Spec`中都有一個全局且獨立的 store 物件，可以藉由該物件進行誇模板的測試：
 
 ![store1](./images/store1.png)
 
@@ -82,9 +80,9 @@ weg
 
 ### 使用變數
 
-你可以在工具列上看到`(x)`的按鈕，點擊後會出現變數編輯畫面。
+你可以在工具列上看到 `(x)` 的按鈕，點擊後會出現變數編輯畫面。
 
-在所有文字輸出之後，WEG會將{key}轉換成{value}(不能有空白)，如下：
+在所有文字輸出之後，WEG 會將 {key} 轉換成 {value} (不能有空白)，如下：
 
 ![var1](./images/var1.png)
 
@@ -102,15 +100,17 @@ it('輸出結果', async function() {
 })
 ```
 
+---
+
 ### 自定義按鈕
 
-你需要理解JavaScript才能開始自訂按鈕，點擊自定義按鈕後可以建立一個按鈕並創造一個範例：
+你需要理解 JavaScript 才能開始自訂按鈕，點擊自定義按鈕後可以建立一個按鈕並創造一個範例：
 
 ```js
 {
     // 短說明
     info: '短說明',
-    // 點擊Help按鈕時出現的詳細說明，支援markdown格式
+    // 點擊Help按鈕時出現的詳細說明，支援Html格式
     help: '詳細說明',
     // 本按鈕的主題顏色
     color: '#000000',
@@ -146,7 +146,7 @@ it('輸出結果', async function() {
 
 #### 輸出結果
 
-所有由`write`返回的結果都會輸出在一個`async`閉包內，因此你可以較大膽地宣告一些行為，輸出如下：
+所有由 `write` 返回的結果都會輸出在一個 `async` 閉包內，因此你可以較大膽地宣告一些行為，輸出如下：
 
 ```js
 await (async () => {
@@ -156,11 +156,11 @@ await (async () => {
 })()
 ```
 
-> 其實WEG就是將模板轉化成程式碼的工具而已。
+> 其實 WEG 就是將模板轉化成程式碼的工具而已。
 
 #### Event
 
-有些功能比較難在Node中實現，例如：多媒體，此時可以藉由`console.log('@event:{my-event}')`推播event給瀏覽器知道：
+有些功能比較難在 Node 中實現，例如：多媒體，此時可以藉由 `console.log('@event:{my-event}')` 推播 event 給瀏覽器知道：
 
 ##### play-sound
 
@@ -174,7 +174,7 @@ write(props) {
 
 #### 選項列表
 
-`Porp`是使用者操作的核心目標，各類行所需要的屬性如下：
+`Porp` 是使用者操作的核心目標，各類行所需要的屬性如下：
 
 ##### text
 
@@ -215,7 +215,7 @@ write(props) {
 
 ##### javascript
 
-javascript文字編輯器。
+javascript 的文字編輯器。
 
 ```js
 {
