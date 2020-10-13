@@ -1,4 +1,4 @@
-<p align="center"><img src="./images/logo.png"></p>
+<p align="center"><img src="https://github.com/KHC-ZhiHao/web-e2e-gui/raw/master/images/logo.png"></p>
 
 <p align="center" style="font-size:2em">可介面操作 E2E 測試工具</p>
 
