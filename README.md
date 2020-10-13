@@ -15,7 +15,7 @@
 
 ## Summary
 
-WEB-E2E-GUI 是以[Protractor](https://www.protractortest.org/)為主的可介面操作 E2E 測試工具。
+WEB-E2E-GUI 是以 [Protractor](https://www.protractortest.org/) 為主的可介面操作 E2E 測試工具。
 
 目標與定位是在中小型專案，大多是人手不足的情況下(大多時候專案只有兩位人員)能夠平均分擔 QA 的部分，
 
