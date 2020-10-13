@@ -70,13 +70,13 @@ weg
 
 所有的`Spec`中都有一個全局且獨立的 store 物件，可以藉由該物件進行誇模板的測試：
 
-![store1](./images/store1.png)
+![store1](https://github.com/KHC-ZhiHao/web-e2e-gui/raw/master/images/store1.png)
 
-![store2](./images/store2.png)
+![store2](https://github.com/KHC-ZhiHao/web-e2e-gui/raw/master/images/store2.png)
 
 運行結果：
 
-![store3](./images/store3.png)
+![store3](https://github.com/KHC-ZhiHao/web-e2e-gui/raw/master/images/store3.png)
 
 ### 使用變數
 
@@ -84,9 +84,9 @@ weg
 
 在所有文字輸出之後，WEG 會將 {key} 轉換成 {value} (不能有空白)，如下：
 
-![var1](./images/var1.png)
+![var1](https://github.com/KHC-ZhiHao/web-e2e-gui/raw/master/images/var1.png)
 
-![var2](./images/var2.png)
+![var2](https://github.com/KHC-ZhiHao/web-e2e-gui/raw/master/images/var2.png)
 
 ```js
 it('輸出結果', async function() {

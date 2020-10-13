@@ -1,11 +1,11 @@
 {
   "name": "web-e2e-gui",
-  "version": "0.0.1",
+  "version": "1.0.2",
   "description": "有介面的web e2e測試",
   "main": "index.js",
   "scripts": {
     "link": "cd view & npm run build & cd .. && npm link --force",
-    "publish": "cd view & npm run build & cd .. & npm publish"
+    "push": "cd view & npm run build & cd .. & npm publish --access public"
   },
   "bin": {
     "weg": "./index.js"
