@@ -1,7 +1,6 @@
 import { defineTemplate } from '../define'
 
-const help = `
-    ### 驗證標籤數量
+const help = /* html */ `
     由時候我們必須知道是否會開出分頁，可以用這個方法確認分頁的數量。
 `
 

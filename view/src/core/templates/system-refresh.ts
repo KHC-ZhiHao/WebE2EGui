@@ -1,7 +1,6 @@
 import { defineTemplate } from '../define'
 
-const help = `
-    ### 重整
+const help = /* html */ `
     重整當前頁面。
 `
 
@@ -13,7 +12,7 @@ export default defineTemplate({
         type: 'system',
         btnText: '重整當前頁面',
         info: '重整當前頁面',
-        color: 'blue-grey lighten-1',
+        color: 'green darken-1',
         display() {
             return `重整當前頁面`
         },

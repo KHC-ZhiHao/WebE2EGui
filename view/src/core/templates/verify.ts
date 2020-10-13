@@ -1,9 +1,8 @@
 import { props, display, validate } from '../mixins/selector'
 import { defineTemplate } from '../define'
 
-const help = `
-    ### 驗證指定的 Element 內文是否符合需求
-    * 方法如選項所見
+const help = /* html */ `
+    方法如選項所見。。
 `
 
 const modeOptions = [

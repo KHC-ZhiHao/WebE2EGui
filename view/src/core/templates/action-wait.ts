@@ -1,5 +1,9 @@
 import { defineTemplate } from '../define'
 
+const help = /* html */ `
+    等待指定的毫秒數，模擬使用者操作時不會即時反應的行為。
+`
+
 export default defineTemplate({
     props: {
         value: {
@@ -9,11 +13,11 @@ export default defineTemplate({
         }
     },
     template: {
+        help,
         name: 'wait',
         type: 'action',
         btnText: '等待',
         info: '等待',
-        help: '等待N毫秒',
         color: 'purple accent-1',
         display({ value }) {
             return `等待 ${value} 毫秒`

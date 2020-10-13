@@ -1,7 +1,6 @@
 import { defineTemplate } from '../define'
 
-const help = `
-    ### 編寫腳本
+const help = /* html */ `
     直接編寫Protractor(https://www.protractortest.org)程式碼。
 `
 

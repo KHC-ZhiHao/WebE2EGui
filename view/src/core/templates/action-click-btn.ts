@@ -1,7 +1,6 @@
 import { defineTemplate } from '../define'
 
-const help = `
-    ### 點擊按鈕
+const help = /* html */ `
     觸發指定文字內容的element click事件。
 `
 
@@ -19,7 +18,7 @@ export default defineTemplate({
         type: 'action',
         btnText: '點擊指定文字',
         info: '點擊符合文字的按鈕',
-        color: 'teal lighten-2',
+        color: 'red darken-2',
         display({ value }) {
             return `點擊 ${value} 按鈕`
         },

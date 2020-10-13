@@ -1,7 +1,6 @@
 import { defineTemplate } from '../define'
 
-const help = `
-    ### 點擊標籤
+const help = /* html */ `
     點擊分頁的標籤，作為更換分頁使用。
 `
 

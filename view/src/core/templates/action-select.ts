@@ -1,8 +1,7 @@
 import { props, display, validate } from '../mixins/selector'
 import { defineTemplate } from '../define'
 
-const help = `
-    ### 選擇 Select 按鈕
+const help = /* html */ `
     點擊 Select 標籤的 Option 對象。
 `
 
@@ -20,7 +19,7 @@ export default defineTemplate({
         type: 'action',
         btnText: '選擇選項',
         info: '選擇選項',
-        color: 'deep-purple lighten-1',
+        color: 'red darken-2',
         display({ selector, target, index, value }) {
             return `選擇選項 ${display({ selector, target, index })} Option 內容為 ${value}`
         },

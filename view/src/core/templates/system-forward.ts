@@ -1,7 +1,6 @@
 import { defineTemplate } from '../define'
 
-const help = `
-    ### 下一頁
+const help = /* html */ `
     點擊瀏覽器的下一頁。
 `
 

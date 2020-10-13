@@ -1,7 +1,6 @@
 import { defineTemplate } from '../define'
 
-const help = `
-    ### 輪詢
+const help = /* html */ `
     等待直到條件符合為止，等待時間過長代表錯誤。
 `
 

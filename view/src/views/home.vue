@@ -107,10 +107,13 @@ export default defineComponent({
         }
 
         let inputProject = async() => {
-            if (!inputFile.value.value) {
+            let file = inputFile.value.files[0]
+            let value = inputFile.value.value
+            inputFile.value.value = ''
+            if (!value) {
                 return null
             }
-            let target = await readFileText(inputFile.value.files[0])
+            let target = await readFileText(file)
             let project = alas.make('project', 'project').$init(JSON.parse(target))
             if (project.name == null) {
                 return action.message('error', '格式不正確')

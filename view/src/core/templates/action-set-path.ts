@@ -1,7 +1,6 @@
 import { defineTemplate } from '../define'
 
-const help = `
-    ### 前往指定的網址
+const help = /* html */ `
     前往指定的網址。
 `
 
@@ -19,7 +18,7 @@ export default defineTemplate({
         type: 'action',
         btnText: '前往',
         info: '前往',
-        color: 'blue-grey darken-1',
+        color: 'red darken-2',
         display({ value }) {
             return `前往 ${value}`
         },

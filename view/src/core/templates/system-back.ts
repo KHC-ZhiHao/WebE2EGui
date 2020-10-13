@@ -1,7 +1,7 @@
 import { defineTemplate } from '../define'
 
-const help = `
-    ### 回上一頁
+const help = /* html */ `
+    點擊瀏覽器的回上一頁。
 `
 
 export default defineTemplate({

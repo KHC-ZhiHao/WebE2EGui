@@ -111,11 +111,12 @@ export default defineComponent({
                 props[key] = template.props[key].default
             }
             $.dialog = false
-            $.step.templates.once('$writeSuccess', () => self.emit('add', $.index, $.step))
-            $.step.templates.write({
+            let newTemp = alas.make('project', 'template').$init({
                 name,
                 props
-            }, {
+            })
+            $.step.templates.once('$writeSuccess', () => self.emit('add', newTemp))
+            $.step.templates.write(newTemp, {
                 insert: $.index + 1
             })
         }

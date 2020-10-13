@@ -1,7 +1,6 @@
 import { defineTemplate } from '../define'
 
-const help = `
-    ### 驗證 Element 是否存在
+const help = /* html */ `
     指定 Element Name 屬性，驗證是否存在與否。
 `
 

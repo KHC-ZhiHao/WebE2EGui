@@ -1,7 +1,6 @@
 import { defineTemplate } from '../define'
 
-const help = `
-    ### 驗證 Element 數量
+const help = /* html */ `
     如果你的 Element 是動態產生的，此方法可以驗證你指向的 Query Selector 有多少個。
 `
 

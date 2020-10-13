@@ -1,7 +1,6 @@
 import { defineTemplate } from '../define'
 
-const help = `
-    ### 模擬滾動
+const help = /* html */ `
     滾動視窗到指定element或者是到達特定位置。
 `
 
@@ -47,7 +46,7 @@ export default defineTemplate({
         type: 'action',
         btnText: '滾動',
         info: '滾動頁面至指定位置',
-        color: 'light-green darken-1',
+        color: 'red darken-2',
         display({ selector, target, positionX, positionY }) {
             if (selector === 'name') {
                 return `滾動畫面至 name : ${target}`

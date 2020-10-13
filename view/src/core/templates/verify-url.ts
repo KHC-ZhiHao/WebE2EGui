@@ -1,10 +1,11 @@
 import { defineTemplate } from '../define'
 
-const help = `
-    ### 驗證網址是否符合需求
-    * 包含 = 指定內容出現在網址的某一部分
-    * 不含 = 指定內容不存在網址內
-    * 完全符合 = 網址需跟指定內容完全相符
+const help = /* html */ `
+    <ul>
+        <li>包含: 指定內容出現在網址的某一部分。</li>
+        <li>不含: 指定內容不存在網址內。</li>
+        <li>完全符合: 網址需跟指定內容完全相符。</li>
+    </ul>
 `
 
 export default defineTemplate({
@@ -28,7 +29,7 @@ export default defineTemplate({
             ],
             default: 'like'
         },
-        content: {
+        verify: {
             type: 'text',
             info: '應該是',
             default: ''
@@ -41,7 +42,7 @@ export default defineTemplate({
         info: '驗證網址',
         color: 'brown darken-1',
         help,
-        display({ mode, content }) {
+        display({ mode, verify }) {
             let type = ''
             if (mode === 'no-like') {
                 type = '不包含'
@@ -52,15 +53,15 @@ export default defineTemplate({
             if (mode === 'match') {
                 type = '完全符合'
             }
-            return `驗證網址 ${type} ${content}`
+            return `驗證網址 ${type} ${verify}`
         },
-        validate({ content }) {
-            if (!content) {
+        validate({ verify }) {
+            if (!verify) {
                 return '找不到內容'
             }
             return true
         },
-        write({ mode, content }) {
+        write({ mode, verify }) {
             let type = ''
             if (mode === 'no-like') {
                 type = 'not.toMatch'
@@ -72,7 +73,7 @@ export default defineTemplate({
                 type = 'toEqual'
             }
             return /* javascript */ `
-                await expect(await browser.getCurrentUrl()).${type}('${content}')
+                await expect(await browser.getCurrentUrl()).${type}('${verify}')
             `
         }
     }

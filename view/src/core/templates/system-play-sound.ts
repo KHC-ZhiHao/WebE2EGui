@@ -1,7 +1,6 @@
 import { defineTemplate } from '../define'
 
-const help = `
-    ### 播放聲音
+const help = /* html */ `
     從電腦發出聲音，提示正在滑手機的你是否看看有需要注意或手動操作的地方。
 `
 

@@ -1,8 +1,7 @@
 import { props, validate, display } from '../mixins/selector'
 import { defineTemplate } from '../define'
 
-const help = `
-    ### 清空輸入欄內容
+const help = /* html */ `
     指定對象如果是輸入欄，則清空內容。
 `
 
@@ -14,7 +13,7 @@ export default defineTemplate({
         type: 'action',
         btnText: '清空',
         info: '清空輸入欄內容',
-        color: 'blue darken-2',
+        color: 'red darken-2',
         display({ selector, target, index }) {
             return `清空 ${display({ selector, target, index })} 輸入欄內的數值`
         },

@@ -1,7 +1,6 @@
 import { defineTemplate } from '../define'
 
-const help = `
-    ### 發送請求
+const help = /* html */ `
     使用 axios 發送請求，意味著 response 是指 axios 的 response，且同時須注意整個程式是在 Protractor 執行而不是瀏覽器。
 `
 
@@ -67,26 +66,26 @@ export default defineTemplate({
         type: 'engineer',
         btnText: '發送請求',
         info: '像API發出請求，只限回傳JSON格式',
-        color: 'deep-orange darken-4',
+        color: 'orange darken-4',
         display({ title }) {
             return `基於 ${title} 發出請求`
         },
-        validate({ method, uri, headers, body, query, response }) {
+        validate({ uri, headers, body, query, response }) {
             if (uri.match('http') == null) {
                 return 'Uri 不存在 http，請使用 https:// 作為開頭。'
             }
             try {
-                eval(headers)
+                eval('var __verify__ = ' + headers)
             } catch (error) {
                 return `Header 語法表達錯誤，請使用 JSON 格式。(${error.message})`
             }
             try {
-                eval(body)
+                eval('var __verify__ = ' + body)
             } catch (error) {
                 return `Body 語法表達錯誤，請使用 JSON 格式。(${error.message})`
             }
             try {
-                eval(query)
+                eval('var __verify__ = ' + query)
             } catch (error) {
                 return `Query 語法表達錯誤，請使用 JSON 格式。(${error.message})`
             }

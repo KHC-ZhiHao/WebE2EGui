@@ -1,8 +1,7 @@
 import { defineTemplate } from '../define'
 
-const help = `
-    ### 讀寫localstorage
-    就是操作這次打開網頁的localstorage。
+const help = /* html */ `
+    操作目前網域的localstorage。
 `
 
 export default defineTemplate({
@@ -45,7 +44,7 @@ export default defineTemplate({
         type: 'system',
         btnText: 'storage',
         info: '操作Local Storage',
-        color: 'blue-grey darken-2',
+        color: 'green darken-1',
         display({ mode, key, value }) {
             if (mode === 'clear') {
                 return 'Local Storage : 清空'
