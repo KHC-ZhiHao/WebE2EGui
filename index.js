@@ -114,7 +114,7 @@ app.post('/exec', function(req, res) {
     res.json({
         id
     })
-    let process = childProcess.exec(`cd ${__dirname} & ${script}`)
+    let process = childProcess.exec(`cd ${__dirname} && ${script}`)
     process.stdout.on('data', data => {
         io.emit(id, {
             type: 'data',
