@@ -2,7 +2,7 @@ import { props, display, validate } from '../mixins/selector'
 import { defineTemplate } from '../define'
 
 const help = /* html */ `
-    方法如選項所見。。
+    方法如選項所見。
 `
 
 const modeOptions = [
@@ -41,10 +41,10 @@ export default defineTemplate({
     template: {
         name: 'verify',
         type: 'verify',
-        btnText: '驗證文本',
         info: '驗證參數',
         help,
         color: 'brown darken-1',
+        btnText: '驗證文本',
         display({ target, mode, verify, selector, index }) {
             let { text } = modeOptions.find(e => e.value === mode)
             return `驗證 ${display({ selector, target, index })} ${text} ${verify}`
@@ -73,7 +73,7 @@ export default defineTemplate({
             if (mode === 'no-like') {
                 type = 'not.toMatch'
             }
-            return `await expect(${unit}).${mode}('${verify}')`
+            return `await expect(${unit}).${type}('${verify}')`
         }
     }
 })
