@@ -57,6 +57,8 @@
                 class="mb-4"
                 label="繼承對象"
             ></v-select>
+            <v-toolbar dense elevation="1" color="cyan lighten-5">說明</v-toolbar>
+            <markdown-editor class="mb-3" v-model="$.spec.desc" height="250px"></markdown-editor>
             <div v-for="(step, index) in $.spec.steps.items" :key="step.name + index">
                 <v-toolbar dense elevation="1" color="cyan lighten-5">
                     <v-toolbar-title>{{ step.name }}</v-toolbar-title>

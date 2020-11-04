@@ -113,14 +113,18 @@ export const Options: IModelOptions<Model, List> = {
     },
     methods: {
         async zip(self) {
-            let { e2eOptions, packageOptions, specsItems } = self.$m.getOutputFiles()
+            let { e2eOptions, packageOptions, specsItems, readmeFiles } = self.$m.getOutputFiles()
             let zip = new JSzip()
             let data = zip.folder("data")
+            let docs = zip.folder("docs")
             zip.file('project.json', JSON.stringify(self.$v.output, null, 4))
             zip.file('package.json', packageOptions)
             data.file('config.js', e2eOptions)
             for (let item of specsItems) {
                 data.file(item.name, await beautify(item.content, 4))
+            }
+            for (let item of readmeFiles) {
+                docs.file(item.name, item.content)
             }
             let content = await zip.generateAsync({ type: 'blob' })
             return content
@@ -140,6 +144,7 @@ export const Options: IModelOptions<Model, List> = {
                 },
                 specs: self.specs.items.filter(s => specs ? specs.includes(s.id) : true).map(s => s.name + '.js')
             }
+            let readmeFiles = []
             let devDependencies = {
                 axios: '0.20.0'
             }
@@ -159,11 +164,18 @@ export const Options: IModelOptions<Model, List> = {
                         name: `${model.name}.js`,
                         content: model.$v.write
                     })
+                    if (model.desc) {
+                        readmeFiles.push({
+                            name: `${model.name}.md`,
+                            content: model.desc
+                        })
+                    }
                 }
             })
             return {
                 e2eOptions: `exports.config = ${JSON.stringify(e2eOptions, null, 4)}`,
                 specsItems,
+                readmeFiles,
                 packageOptions: JSON.stringify(packageOptions, null, 4)
             }
         },

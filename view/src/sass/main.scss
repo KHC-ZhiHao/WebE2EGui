@@ -1,3 +1,13 @@
 * {
     font-family: 'Noto Sans TC';
 }
+
+.v-md-toolbar {
+    display: flex;
+}
+
+.v-md-container {
+    .btn-group {
+        margin-right: 0px !important;
+    }
+}

@@ -1,4 +1,5 @@
 import 'vuetify/dist/vuetify.min.css'
+import 'v-markdown-editor/dist/v-markdown-editor.css'
 import 'codemirror/lib/codemirror.css'
 import './sass/main.scss'
 import './components'
@@ -6,6 +7,7 @@ import './components'
 import Vue from 'vue'
 import Vuetify from 'vuetify'
 import VueCodemirror from 'vue-codemirror'
+import VueMarkDownEditor from 'v-markdown-editor'
 import VueCompositionAPI from '@vue/composition-api'
 
 import app from './app.vue'
@@ -14,6 +16,7 @@ import router from './router'
 
 Vue.config.productionTip = false
 Vue.use(Vuetify)
+Vue.use(VueMarkDownEditor)
 Vue.use(VueCompositionAPI)
 Vue.use(VueCodemirror, {
     options: {

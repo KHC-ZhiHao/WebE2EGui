@@ -17,6 +17,7 @@ export type Output = {
 export interface Model extends IModel {
     id: string
     name: string
+    desc: string
     steps: Step.List
     group: string
     parent: string
@@ -42,6 +43,7 @@ export interface List extends IList<Model> {
 export const Options: IModelOptions<Model, List> = {
     body: {
         id: [],
+        desc: [],
         name: [],
         group: [],
         parent: [],
@@ -50,6 +52,7 @@ export const Options: IModelOptions<Model, List> = {
     },
     defs: {
         id: () => uuidv4(),
+        desc: () => '',
         createdAt: () => Date.now(),
         updatedAt: () => Date.now()
     },
@@ -113,6 +116,7 @@ export const Options: IModelOptions<Model, List> = {
                 id: self.id,
                 tag: self.$v.tag,
                 name: self.name,
+                desc: self.desc,
                 group: self.group,
                 steps: self.steps.v.output,
                 parent: self.parent,
