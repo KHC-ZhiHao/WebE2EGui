@@ -57,7 +57,16 @@
                 class="mb-4"
                 label="繼承對象"
             ></v-select>
-            <v-toolbar dense elevation="1" color="cyan lighten-5">說明</v-toolbar>
+            <v-toolbar dense elevation="1" color="cyan lighten-5">
+                <span>說明</span>
+                <v-spacer></v-spacer>
+                <v-tooltip bottom>
+                    <template v-slot:activator="{ on, attrs }">
+                        <v-icon v-bind="attrs" v-on="on">mdi-help-circle-outline</v-btn>
+                    </template>
+                    <span>你可以在這裡紀錄或說明整個測試過程，採用Makedown格式，在輸出檔案時也會連同說明一起輸出。</span>
+                </v-tooltip>
+            </v-toolbar>
             <markdown-editor class="mb-3" v-model="$.spec.desc" height="250px"></markdown-editor>
             <div v-for="(step, index) in $.spec.steps.items" :key="step.name + index">
                 <v-toolbar dense elevation="1" color="cyan lighten-5">

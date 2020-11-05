@@ -3,6 +3,14 @@
         <ui-app-bar :title="'專案 - ' + $.project.name" :back="{ name: 'home' }">
             <v-tooltip bottom>
                 <template v-slot:activator="{ on }">
+                    <v-btn v-on="on" small icon class="mr-2" @click="openConfig">
+                        <v-icon>mdi-cog</v-icon>
+                    </v-btn>
+                </template>
+                <span>Protractor設定</span>
+            </v-tooltip>
+            <v-tooltip bottom>
+                <template v-slot:activator="{ on }">
                     <v-btn v-on="on" small icon class="mr-2" @click="outputJS">
                         <v-icon>mdi-language-javascript</v-icon>
                     </v-btn>
@@ -186,7 +194,8 @@ export default defineComponent({
             variable: false,
             group: false,
             removeMode: false,
-            dependencie: false
+            dependencie: false,
+            editConfig: false
         })
 
         // =================
@@ -230,6 +239,10 @@ export default defineComponent({
             }
         }
 
+        let openConfig = () => {
+            $.editConfig = true
+        }
+
         let create = () => {
             createForm.value.open(() => {
                 if ($.createCopyTarget) {
@@ -264,6 +277,7 @@ export default defineComponent({
             invoke,
             selectSpecInvoke,
             createForm,
+            openConfig,
             outputProject,
             outputJS,
             invokeTest,

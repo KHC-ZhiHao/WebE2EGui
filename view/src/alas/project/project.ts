@@ -136,7 +136,11 @@ export const Options: IModelOptions<Model, List> = {
                 capabilities: {
                     browserName: 'chrome',
                     chromeOptions: {
-                        args: ['--window-size=1600,900', '--auto-open-devtools-for-tabs']
+                        args: [
+                            '--window-size=1600,900',
+                            '--auto-open-devtools-for-tabs',
+                            '--window-position=1600,900'
+                        ]
                     }
                 },
                 jasmineNodeOpts: {
