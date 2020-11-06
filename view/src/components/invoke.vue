@@ -21,6 +21,7 @@
 </template>
 
 <script lang="ts">
+import marked from 'marked'
 import socket from '@/socket'
 import { getConfig, copy } from '@/utils'
 import { RefElement } from '@/vue-core'
@@ -100,6 +101,9 @@ export default defineComponent({
                 $.totalError += 1
                 $.errorTest.push($.nowTest)
                 return `<font color="red">Fail</font>`
+            }
+            if (message.match('說明 =>')) {
+                return `<font color="aquamarine">${marked(message.replace('說明 =>', '').trim())}</font>`
             }
             if (message.match('測試 =>')) {
                 $.nowTest = message.replace('測試 =>', '').trim()

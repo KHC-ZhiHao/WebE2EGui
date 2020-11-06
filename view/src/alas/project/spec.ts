@@ -7,6 +7,7 @@ export type Output = {
     id: string
     tag: string
     name: string
+    desc: string
     group: string
     steps: Step.Output[]
     parent: string
@@ -85,6 +86,7 @@ export const Options: IModelOptions<Model, List> = {
             return output
         },
         write(self) {
+            let desc = self.desc.replace('`', '\\`')
             let steps = self.$v.steps
             return `
                 const store = {}
@@ -92,6 +94,7 @@ export const Options: IModelOptions<Model, List> = {
                     beforeAll(async () => {
                         await browser.sleep(500)
                         console.log('測試 => ${self.name}')
+                        console.log(\`說明 => \n${desc}\`)
                         await browser.sleep(500)
                     })
 
