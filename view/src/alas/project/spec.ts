@@ -103,7 +103,7 @@ export const Options: IModelOptions<Model, List> = {
                         await browser.sleep(1000)
                     })
 
-                    ${steps.map(s => s.$v.write).join('\n')}
+                    ${steps.map(s => s.$v.write).join('\n\n')}
 
                     it('done', () => {
                         console.log('執行完畢')

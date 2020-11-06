@@ -52,7 +52,7 @@ export const Options: IModelOptions<Model, List> = {
             return 'step'
         },
         write(self) {
-            return `
+            return ` 
                 it('${self.name}', async function() {
                     console.log('執行 => ${self.name}')
                     await browser.sleep(120)

@@ -103,7 +103,12 @@ export default defineComponent({
                 return `<font color="red">Fail</font>`
             }
             if (message.match('說明 =>')) {
-                return `<font color="aquamarine">${marked(message.replace('說明 =>', '').trim())}</font>`
+                let text = marked(message.replace('說明 =>', '').trim())
+                if (text) {
+                    return `<font color="aquamarine">${text}</font>`
+                } else {
+                    return ''
+                }
             }
             if (message.match('測試 =>')) {
                 $.nowTest = message.replace('測試 =>', '').trim()
@@ -174,3 +179,20 @@ export default defineComponent({
     }
 })
 </script>
+
+<style lang="scss" scoped>
+    .image-bolck {
+        position: relative;
+        img {
+            display: none;
+            position: fixed;
+            width: 20vw;
+            min-width: 300px
+        }
+    }
+    .image-bolck:hover {
+        img {
+            display: block;
+        }
+    }
+</style>

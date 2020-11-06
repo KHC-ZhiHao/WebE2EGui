@@ -60,11 +60,13 @@ export const Options: IModelOptions<Model, List> = {
                 display = display.replace(new RegExp(`{${variable.key}}`, 'g'), variable.value)
             }
             return `
+
                 await (async() => {
                     console.log('動作 => ${display}')
                     ${write}
                     await browser.sleep(100)
                 })()
+
             `
         },
         output(self) {
