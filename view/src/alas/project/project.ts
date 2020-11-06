@@ -10,6 +10,7 @@ import * as Group from './group'
 import * as Variables from './variable'
 import * as CustomBtns from './customBtn'
 import * as Dependencies from './dependencie'
+import * as BrowserOption from './browserOption'
 
 const config = getConfig()
 
@@ -33,6 +34,7 @@ export interface Model extends IModel {
     updatedAt: number
     specs: Spec.List
     groups: Group.List
+    browserOption: BrowserOption.Model
     variables: Variables.List
     customBtns: CustomBtns.List
     dependencies: Dependencies.List
@@ -77,10 +79,8 @@ export const Options: IModelOptions<Model, List> = {
         groups: '[group]',
         variables: '[variable]',
         customBtns: '[customBtn]',
-        dependencies: '[dependencie]'
-    },
-    init(self, source = {}) {
-        return source
+        dependencies: '[dependencie]',
+        browserOption: 'browserOption'
     },
     export(self) {
         if (self.dependencies.size === 0) {
@@ -104,7 +104,8 @@ export const Options: IModelOptions<Model, List> = {
                 updatedAt: self.updatedAt,
                 variables: self.variables.v.output,
                 customBtns: self.customBtns.v.output,
-                dependencies: self.dependencies.v.output
+                dependencies: self.dependencies.v.output,
+                browserOption: self.browserOption.$v.output
             }
         },
         projectPath(self) {
@@ -134,13 +135,13 @@ export const Options: IModelOptions<Model, List> = {
                 framework: 'jasmine',
                 directConnect: true,
                 capabilities: {
-                    browserName: 'chrome',
+                    browserName: self.browserOption.target,
                     chromeOptions: {
                         args: [
-                            '--window-size=1600,900',
-                            '--auto-open-devtools-for-tabs',
-                            '--window-position=1600,900'
-                        ]
+                            `--window-size=${self.browserOption.width},${self.browserOption.height}`,
+                            self.browserOption.openConsole ? '--auto-open-devtools-for-tabs' : null,
+                            `--window-position=${self.browserOption.posX},${self.browserOption.posY}`
+                        ].filter(e => !!e)
                     }
                 },
                 jasmineNodeOpts: {

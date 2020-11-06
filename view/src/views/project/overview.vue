@@ -71,7 +71,7 @@
                         <v-icon>mdi-play</v-icon>
                     </v-btn>
                 </template>
-                <span>運行所有測試</span>
+                <span>運行測試</span>
             </v-tooltip>
         </ui-app-bar>
         <div v-if="$.project.specs.size === 0" class="text-center pt-5 subtitle-1 grey--text">
@@ -134,6 +134,9 @@
         <v-dialog v-model="$.group" max-width="800px">
             <self-group :project="$.project"></self-group>
         </v-dialog>
+        <v-dialog v-model="$.editConfig" max-width="800px" :persistent="!$.project.browserOption.$validate().success">
+            <self-config :project="$.project"></self-config>
+        </v-dialog>
         <ui-select-spec ref="selectSpecInvoke"></ui-select-spec>
         <ui-invoke ref="invoke"></ui-invoke>
         <ui-form title="建立測試" ref="createForm">
@@ -168,6 +171,7 @@ import downloadjs from 'downloadjs'
 import Group from './components/group.vue'
 import Variable from './components/variable.vue'
 import Dependencie from './components/dependencie.vue'
+import Config from './components/config.vue'
 import { RefComponent } from '@/vue-core'
 import { alas, status, action } from '@/alas'
 import { defineComponent, reactive, ref } from '@vue/composition-api'
@@ -175,6 +179,7 @@ export default defineComponent({
     props: {},
     components: {
         'self-group': Group,
+        'self-config': Config,
         'self-variable': Variable,
         'self-dependencie': Dependencie
     },

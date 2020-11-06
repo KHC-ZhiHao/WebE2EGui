@@ -7,6 +7,7 @@ import * as Variable from './variable'
 import * as Template from './template'
 import * as CustomBtn from './customBtn'
 import * as Dependencie from './dependencie'
+import * as BrowserOption from './browserOption'
 
 export interface Container extends IContainer {
     models: {
@@ -18,6 +19,7 @@ export interface Container extends IContainer {
         template: IContainerModel<Template.Model, Template.List>
         customBtn: IContainerModel<CustomBtn.Model, CustomBtn.List>
         dependencie: IContainerModel<Dependencie.Model, Dependencie.List>
+        browserOption: IContainerModel<BrowserOption.Model, BrowserOption.List>
     }
 }
 
@@ -30,6 +32,7 @@ export const Container: IContainerOptions<Container> = {
         variable: Variable.Options,
         template: Template.Options,
         customBtn: CustomBtn.Options,
-        dependencie: Dependencie.Options
+        dependencie: Dependencie.Options,
+        browserOption: BrowserOption.Options
     }
 }
