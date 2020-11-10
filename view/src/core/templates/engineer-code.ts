@@ -1,7 +1,7 @@
 import { defineTemplate } from '../define'
 
 const help = /* html */ `
-    直接編寫Protractor(https://www.protractortest.org)程式碼。
+    直接編寫 Protractor(https://www.protractortest.org) 程式碼，如果要使用變數請使用 browser.params。
 `
 
 export default defineTemplate({
@@ -13,7 +13,7 @@ export default defineTemplate({
         },
         value: {
             type: 'javascript',
-            info: '程式碼',
+            info: '程式碼(不支援變數)',
             default: ''
         }
     },

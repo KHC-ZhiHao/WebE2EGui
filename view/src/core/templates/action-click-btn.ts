@@ -29,7 +29,7 @@ export default defineTemplate({
             return true
         },
         write({ value }) {
-            return `await element(by.buttonText('${value}')).click()`
+            return `await element(by.buttonText(\`${value}\`)).click()`
         }
     }
 })

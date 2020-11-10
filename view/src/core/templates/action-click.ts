@@ -42,17 +42,17 @@ export default defineTemplate({
         write({ selector, target, index, action }) {
             if (action === 'system') {
                 if (selector === 'name') {
-                    return `await element(by.name('${target}')).click()`
+                    return `await element(by.name(\`${target}\`)).click()`
                 }
                 if (selector === 'query') {
-                    return `await (await $$('${target}'))[${index}].click()`
+                    return `await (await $$(\`${target}\`))[${index}].click()`
                 }
             } else {
                 if (selector === 'name') {
-                    return `await browser.actions().mouseMove(await element(by.name('${target}'))).click().perform()`
+                    return `await browser.actions().mouseMove(await element(by.name(\`${target}\`))).click().perform()`
                 }
                 if (selector === 'query') {
-                    return `await browser.actions().mouseMove((await $$('${target}'))[${index}]).click().perform()`
+                    return `await browser.actions().mouseMove((await $$(\`${target}\`))[${index}]).click().perform()`
                 }
             }
         }

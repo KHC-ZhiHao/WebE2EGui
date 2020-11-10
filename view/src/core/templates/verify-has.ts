@@ -44,7 +44,7 @@ export default defineTemplate({
             return true
         },
         write({ target, verifyType }) {
-            let unit = `await browser.isElementPresent(element(by.name('${target}')))`
+            let unit = `await browser.isElementPresent(element(by.name(\`${target}\`)))`
             if (verifyType === 'no') {
                 return `await expect(${unit}).toBe(false)`
             } else {

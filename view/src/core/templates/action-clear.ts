@@ -22,11 +22,13 @@ export default defineTemplate({
         },
         write({ selector, target, index }) {
             if (selector === 'name') {
-                return `await element(by.name('${target}')).clear()`
+                return `
+                    await element(by.name(\`${target}\`)).clear()
+                `
             }
             if (selector === 'query') {
                 return `
-                    let element = await $$('${target}')
+                    let element = await $$(\`${target}\`)
                     element[${index}].clear()
                 `
             }

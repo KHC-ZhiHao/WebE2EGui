@@ -56,10 +56,10 @@ export default defineTemplate({
             let type = ''
             let unit = ''
             if (selector === 'name') {
-                unit = `element(by.name('${target}')).getText()`
+                unit = `element(by.name(\`${target}\`)).getText()`
             }
             if (selector === 'query') {
-                unit = `await (await $$('${target}'))[${index}].getText()`
+                unit = `await (await $$(\`${target}\`))[${index}].getText()`
             }
             if (mode === 'no') {
                 type = 'not.toEqual'
@@ -73,7 +73,7 @@ export default defineTemplate({
             if (mode === 'no-like') {
                 type = 'not.toMatch'
             }
-            return `await expect(${unit}).${type}('${verify}')`
+            return `await expect(${unit}).${type}(\`${verify}\`)`
         }
     }
 })

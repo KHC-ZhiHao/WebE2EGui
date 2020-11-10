@@ -110,6 +110,9 @@ export default defineComponent({
                     return ''
                 }
             }
+            if (message.match('@image:')) {
+                return `<img style="min-width: 350px; max-width: 60%" src="data:image/png;base64, ${message.replace('@image:', '')}">`
+            }
             if (message.match('測試 =>')) {
                 $.nowTest = message.replace('測試 =>', '').trim()
                 return `<font color="yellow">${message}</font>`

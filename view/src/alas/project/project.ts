@@ -131,9 +131,15 @@ export const Options: IModelOptions<Model, List> = {
             return content
         },
         getOutputFiles(self, specs?) {
+            let params = {}
+            for (let variables of self.variables.items) {
+                params[variables.key] = variables.value
+            }
             let e2eOptions = {
                 framework: 'jasmine',
                 directConnect: true,
+                ignoreUncaughtExceptions: true,
+                params,
                 capabilities: {
                     browserName: self.browserOption.target,
                     chromeOptions: {

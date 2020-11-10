@@ -35,10 +35,10 @@ export default defineTemplate({
         },
         write({ selector, target, value, index }) {
             if (selector === 'name') {
-                return `await element(by.name('${target}')).element(by.cssContainingText('option', '${value}')).click()`
+                return `await element(by.name(\`${target}\`)).element(by.cssContainingText('option', \`${value}\`)).click()`
             }
             if (selector === 'query') {
-                return `await (await $$('${target}'))[${index}].element(by.cssContainingText('option', '${value}')).click()`
+                return `await (await $$(\`${target}\`))[${index}].element(by.cssContainingText('option', \`${value}\`)).click()`
             }
         }
     }

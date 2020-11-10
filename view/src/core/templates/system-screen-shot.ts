@@ -1,26 +1,26 @@
 import { defineTemplate } from '../define'
 
 const help = /* html */ `
-    點擊瀏覽器的回上一頁。
+    拍攝當下的瀏覽器畫面。
 `
 
 export default defineTemplate({
     props: {},
     template: {
         help,
-        name: 'back',
+        name: 'screen-shot',
         type: 'system',
-        btnText: '上一頁',
-        info: '觸發瀏覽器回到上一頁',
+        btnText: '快照',
+        info: '顯示螢幕快照',
         color: 'green darken-1',
         display() {
-            return `觸發瀏覽器回到上一頁`
+            return `顯示螢幕快照`
         },
         validate() {
             return true
         },
         write() {
-            return `await browser.navigate().back()`
+            return `console.log('@image:' + await browser.takeScreenshot())`
         }
     }
 })

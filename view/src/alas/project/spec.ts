@@ -94,7 +94,8 @@ export const Options: IModelOptions<Model, List> = {
                     beforeAll(async () => {
                         await browser.sleep(500)
                         console.log('測試 => ${self.name}')
-                        console.log(\`說明 => \n${desc}\`)
+                        await browser.sleep(100)
+                        console.log(\`說明 => ${desc}\`)
                         await browser.sleep(500)
                     })
 

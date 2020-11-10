@@ -1,26 +1,26 @@
 import { defineTemplate } from '../define'
 
 const help = /* html */ `
-    點擊瀏覽器的回上一頁。
+    輸出當下網址。
 `
 
 export default defineTemplate({
     props: {},
     template: {
         help,
-        name: 'back',
+        name: 'print-url',
         type: 'system',
-        btnText: '上一頁',
-        info: '觸發瀏覽器回到上一頁',
+        btnText: '輸出網址',
+        info: '輸出網址',
         color: 'green darken-1',
         display() {
-            return `觸發瀏覽器回到上一頁`
+            return `輸出網址`
         },
         validate() {
             return true
         },
         write() {
-            return `await browser.navigate().back()`
+            return `console.log(await browser.getCurrentUrl())`
         }
     }
 })

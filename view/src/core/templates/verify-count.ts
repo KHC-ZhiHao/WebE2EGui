@@ -38,8 +38,8 @@ export default defineTemplate({
             return true
         },
         write({ selector, count }) {
-            return /* javascript */ `
-                await expect($$('${selector}').count()).toBe(${count})
+            return `
+                await expect($$(\`${selector}\`).count()).toBe(${count})
             `
         }
     }

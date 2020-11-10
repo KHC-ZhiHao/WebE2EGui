@@ -82,7 +82,7 @@ weg
 
 你可以在工具列上看到 `(x)` 的按鈕，點擊後會出現變數編輯畫面。
 
-在所有文字輸出之後，WEG 會將 {key} 轉換成 {value} (不能有空白)，如下：
+在所有文字輸出之後，WEG 會將 {key} 轉換成 Protractor Params：
 
 ![var1](https://github.com/KHC-ZhiHao/web-e2e-gui/raw/master/images/var1.png)
 
@@ -93,8 +93,8 @@ it('輸出結果', async function() {
     console.log('執行 => C')
     await browser.sleep(120)
     await (async () => {
-        console.log('動作 => 驗證網址 包含 KHC-ZhiHao/WEB-E2E-GUI')
-        await expect(await browser.getCurrentUrl()).toMatch('KHC-ZhiHao/WEB-E2E-GUI')
+        console.log('動作 => 驗證網址 包含 {baseUrl}')
+        await expect(await browser.getCurrentUrl()).toMatch(`${browser.params['baseUrl']}`)
         await browser.sleep(100)
     })()
 })
@@ -137,7 +137,7 @@ it('輸出結果', async function() {
             return true
         }
     },
-    // 輸出成Protractor的文本
+    // 輸出成Protractor的文本，注意要使用變數的字串必須使用``包裹起來。
     write(props) {
         return 'await browser.sleep(' + props.value + ')'
     }

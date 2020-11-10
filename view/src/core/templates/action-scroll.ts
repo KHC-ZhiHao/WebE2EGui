@@ -72,7 +72,7 @@ export default defineTemplate({
         },
         write({ selector, target, positionX, positionY }) {
             if (selector === 'name') {
-                return `await browser.executeScript('(document.getElementsByName(\\'${target}\\'))[0].scrollIntoView()')`
+                return `await browser.executeScript('(document.getElementsByName(\`${target}\`))[0].scrollIntoView()')`
             } else {
                 return `await browser.executeScript('window.scrollTo(${positionX}, ${positionY})')`
             }

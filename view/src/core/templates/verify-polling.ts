@@ -98,24 +98,24 @@ export default defineTemplate({
             let select = ''
             let condition = ''
             if (selector === 'name') {
-                select = `let result = await element(by.name('${target}')).getAttribute('value')`
+                select = `let result = await element(by.name(\`${target}\`)).getAttribute('value')`
             }
             if (selector === 'query') {
-                select = `let result = await (awaut $$('${target}'))[${index}].getAttribute('value')`
+                select = `let result = await (awaut $$(\`${target}\`))[${index}].getAttribute('value')`
             }
             if (selector === 'URL') {
                 select = `let result = await browser.getCurrentUrl()`
             }
             if (mode === 'like') {
                 condition = `
-                    if (result.toString().match('${value}')) {
+                    if (result.toString().match(\`${value}\`)) {
                         return true
                     }
                 `
             }
             if (mode === 'unlike') {
                 condition = `
-                    if (!result.toString().match('${value}')) {
+                    if (!result.toString().match(\`${value}\`)) {
                         return true
                     }
                 `

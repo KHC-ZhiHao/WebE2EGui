@@ -1,7 +1,7 @@
 import { defineTemplate } from '../define'
 
 const help = /* html */ `
-    使用 axios 發送請求，意味著 response 是指 axios 的 response，且同時須注意整個程式是在 Protractor 執行而不是瀏覽器。
+    使用 axios 發送請求，意味著 response 是指 axios 的 response，且同時須注意整個程式是在 Protractor 執行而不是瀏覽器，如果要使用變數請使用 browser.params。
 `
 
 export default defineTemplate({
@@ -41,22 +41,22 @@ export default defineTemplate({
         },
         headers: {
             type: 'javascript',
-            info: 'header',
+            info: 'header(不支援變數)',
             default: '{}'
         },
         query: {
             type: 'javascript',
-            info: 'query',
+            info: 'query(不支援變數)',
             default: '{}'
         },
         body: {
             type: 'javascript',
-            info: 'body',
+            info: 'body(不支援變數)',
             default: '{}'
         },
         response: {
             type: 'javascript',
-            info: 'response',
+            info: 'response(不支援變數)',
             default: 'async (response) => { /* 驗證邏輯 */ }'
         }
     },
@@ -74,32 +74,32 @@ export default defineTemplate({
             if (uri.match('http') == null) {
                 return 'Uri 不存在 http，請使用 https:// 作為開頭。'
             }
-            try {
-                eval('var __verify__ = ' + headers)
-            } catch (error) {
-                return `Header 語法表達錯誤，請使用 JSON 格式。(${error.message})`
-            }
-            try {
-                eval('var __verify__ = ' + body)
-            } catch (error) {
-                return `Body 語法表達錯誤，請使用 JSON 格式。(${error.message})`
-            }
-            try {
-                eval('var __verify__ = ' + query)
-            } catch (error) {
-                return `Query 語法表達錯誤，請使用 JSON 格式。(${error.message})`
-            }
+            // try {
+            //     eval('var __verify__ = ' + headers)
+            // } catch (error) {
+            //     return `Header 語法表達錯誤，請使用 JSON 格式。(${error.message})`
+            // }
+            // try {
+            //     eval('var __verify__ = ' + body)
+            // } catch (error) {
+            //     return `Body 語法表達錯誤，請使用 JSON 格式。(${error.message})`
+            // }
+            // try {
+            //     eval('var __verify__ = ' + query)
+            // } catch (error) {
+            //     return `Query 語法表達錯誤，請使用 JSON 格式。(${error.message})`
+            // }
             if (response.trim().slice(0, 5) !== 'async') {
-                return 'Response 的回乎函數請採用 Async Function。'
+                return 'Response 的 Callback 請使用 Async Function。'
             }
             return true
         },
         write({ method, uri, headers, body, query, response }) {
             if (method === 'get' || method === 'delete') {
-                return /* javascript */ `
+                return `
                     try {
                         let axios = require('axios')
-                        let result = await axios['${method}']('${uri}', {
+                        let result = await axios[\`${method}\`](\`${uri}\`, {
                             params: ${query},
                             headers: ${headers}
                         })
@@ -109,10 +109,10 @@ export default defineTemplate({
                     }
                 `
             } else {
-                return /* javascript */ `
+                return `
                     try {
                         let axios = require('axios')
-                        let result = await axios['${method}']('${uri}', ${body}, {
+                        let result = await axios[\`${method}\`](\`${uri}\`, ${body}, {
                             headers: ${headers}
                         })
                         await (${response})(result)

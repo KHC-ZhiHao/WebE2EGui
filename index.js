@@ -121,9 +121,17 @@ app.post('/exec', function(req, res) {
             data: stripAnsi(data).trim()
         })
     })
-    process.on('exit', () => io.emit(id, {
-        type: 'exit'
-    }))
+    process.stdout.on('error', e => {
+        console.error(e)
+    })
+    process.on('error', e => {
+        console.error(e)
+    })
+    process.on('exit', () => {
+        io.emit(id, {
+            type: 'exit'
+        })
+    })
 })
 
 app.post('/beautify', function(req, res) {

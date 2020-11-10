@@ -21,6 +21,8 @@ import SystemRefresh from './templates/system-refresh'
 import SystemPlaySound from './templates/system-play-sound'
 import SystemForward from './templates/system-forward'
 import SystemLocalstorage from './templates/system-localstorage'
+import SystemScreenShot from './templates/system-screen-shot'
+import SystemPrintUrl from './templates/system-print-url'
 
 import EngineerCode from './templates/engineer-code'
 import EngineerHttp from './templates/engineer-http'
@@ -49,6 +51,8 @@ core.addTemplate(SystemRefresh)
 core.addTemplate(SystemPlaySound)
 core.addTemplate(SystemForward)
 core.addTemplate(SystemLocalstorage)
+core.addTemplate(SystemScreenShot)
+core.addTemplate(SystemPrintUrl)
 
 core.addTemplate(EngineerCode)
 core.addTemplate(EngineerHttp)

@@ -3,5 +3,6 @@
 ✔ Step無法上下移動 @done(20-10-12 21:00)
 ✔ 建立按鈕後有展開對象不對的問題 @done(20-11-05 18:02)
 
-☐ 複寫window請求功能
-☐ chrome config設計
+✔ chrome config設計 @done(20-11-09 11:14)
+✘ 複寫window請求功能 @cancelled(20-11-09 11:23) 將API暴露在外有不必要的風險
+☐ 變數隨著環境改變

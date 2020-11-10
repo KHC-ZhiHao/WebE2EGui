@@ -28,10 +28,10 @@ export default defineTemplate({
         },
         write({ selector, target, value, index }) {
             if (selector === 'name') {
-                return `await element(by.name('${target}')).sendKeys('${value}')`
+                return `await element(by.name(\`${target}\`)).sendKeys(\`${value}\`)`
             }
             if (selector === 'query') {
-                return `await (await $$('${target}'))[${index}].sendKeys('${value}')`
+                return `await (await $$(\`${target}\`))[${index}].sendKeys(\`${value}\`)`
             }
         }
     }

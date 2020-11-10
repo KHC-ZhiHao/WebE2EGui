@@ -73,7 +73,7 @@ export default defineTemplate({
                 type = 'toEqual'
             }
             return /* javascript */ `
-                await expect(await browser.getCurrentUrl()).${type}('${verify}')
+                await expect(await browser.getCurrentUrl()).${type}(\`${verify}\`)
             `
         }
     }

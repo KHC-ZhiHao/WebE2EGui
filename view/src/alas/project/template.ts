@@ -56,17 +56,15 @@ export const Options: IModelOptions<Model, List> = {
             let display = target.display(self.props)
             let project = self.$parent.$parent.$parent
             for (let variable of project.variables.items) {
-                write = write.replace(new RegExp(`{${variable.key}}`, 'g'), variable.value)
-                display = display.replace(new RegExp(`{${variable.key}}`, 'g'), variable.value)
+                write = write.replace(new RegExp(`{${variable.key}}`, 'g'), `\${browser.params['${variable.key}']}`)
+                // display = display.replace(new RegExp(`{${variable.key}}`, 'g'), variable.value)
             }
             return `
-
                 await (async() => {
                     console.log('動作 => ${display}')
                     ${write}
                     await browser.sleep(100)
                 })()
-
             `
         },
         output(self) {

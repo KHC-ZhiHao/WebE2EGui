@@ -29,7 +29,7 @@ export default defineTemplate({
             return true
         },
         write({ value }) {
-            return `await browser.driver.get('${value}')`
+            return `await browser.driver.get(\`${value}\`)`
         }
     }
 })
