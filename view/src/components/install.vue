@@ -69,9 +69,9 @@ export default defineComponent({
             $.dialog = true
             try {
                 let packages = project.dependencies.items.map(s => s.name + '@' + s.version)
-                let script = 'npm install -g protractor & webdriver-manager update'
+                let script = 'npm install -g protractor && webdriver-manager update'
                 if (packages.length > 0) {
-                    script += ` & npm install ${packages.join(' ')} --no-save`
+                    script += ` && npm install ${packages.join(' ')} --no-save`
                 }
                 socket.exec(script, (type, data) => {
                     if (type === 'exit') {
