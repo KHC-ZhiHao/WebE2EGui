@@ -74,6 +74,19 @@
                 <span>運行測試</span>
             </v-tooltip>
         </ui-app-bar>
+        <div class="pa-5 pb-0">
+            <v-toolbar dense elevation="1">
+                <span>說明</span>
+                <v-spacer></v-spacer>
+                <v-tooltip bottom>
+                    <template v-slot:activator="{ on, attrs }">
+                        <v-icon v-bind="attrs" v-on="on">mdi-help-circle-outline</v-btn>
+                    </template>
+                    <span>你可以在這裡紀錄一些無法被覆蓋測試的說明，採用Makedown格式，在輸出檔案時也會連同說明一起輸出。</span>
+                </v-tooltip>
+            </v-toolbar>
+            <markdown-editor v-model="$.project.desc" class="mb-3" height="250px"></markdown-editor>
+        </div>
         <div v-if="$.project.specs.size === 0" class="text-center pt-5 subtitle-1 grey--text">
             <div>😥</div>
             <div>一個測試也沒有</div>

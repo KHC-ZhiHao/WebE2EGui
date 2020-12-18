@@ -18,6 +18,7 @@ export type Output = {
     id: string
     tag: string
     name: string
+    desc: string
     specs: Spec.Output[]
     groups: Group.Output[]
     createdAt: number
@@ -30,6 +31,7 @@ export type Output = {
 export interface Model extends IModel {
     id: string
     name: string
+    desc: string
     createdAt: number
     updatedAt: number
     specs: Spec.List
@@ -67,11 +69,13 @@ export const Options: IModelOptions<Model, List> = {
     body: {
         id: [],
         name: [],
+        desc: [],
         createdAt: [],
         updatedAt: []
     },
     defs: {
         id: () => uuidv4(),
+        desc: () => '',
         createdAt: () => Date.now()
     },
     refs: {
@@ -98,6 +102,7 @@ export const Options: IModelOptions<Model, List> = {
                 id: self.id,
                 tag: self.$v.tag,
                 name: self.name,
+                desc: self.desc,
                 specs: self.specs.v.output,
                 groups: self.groups.v.output,
                 createdAt: self.createdAt,
@@ -120,6 +125,7 @@ export const Options: IModelOptions<Model, List> = {
             let docs = zip.folder("docs")
             zip.file('project.json', JSON.stringify(self.$v.output, null, 4))
             zip.file('package.json', packageOptions)
+            zip.file('readme.md', self.desc || '無內容')
             data.file('config.js', e2eOptions)
             for (let item of specsItems) {
                 data.file(item.name, await beautify(item.content, 4))
