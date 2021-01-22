@@ -103,7 +103,9 @@
                             v-if="spec.group === group.id">
                             <v-card class="pa-5" :to="$.removeMode ? undefined : target(spec)">
                                 <v-row align="center">
-                                    <div class="ml-3">{{ spec.name }}</div>
+                                    <div class="ml-3 test-card">
+                                        {{ spec.name }}
+                                    </div>
                                     <v-spacer></v-spacer>
                                     <v-btn v-if="$.removeMode" icon @click.stop="remove(spec.id)">
                                         <v-icon>mdi-trash-can-outline</v-icon>
@@ -126,7 +128,9 @@
                             v-if="!$.project.groups.fetch(spec.group)">
                             <v-card class="pa-5" :to="$.removeMode ? undefined : target(spec)">
                                 <v-row align="center">
-                                    <div class="ml-3">{{ spec.name }}</div>
+                                    <div class="ml-3 test-card">
+                                        {{ spec.name }}
+                                    </div>
                                     <v-spacer></v-spacer>
                                     <v-btn v-if="$.removeMode" icon @click.stop="remove(spec.id)">
                                         <v-icon>mdi-trash-can-outline</v-icon>
@@ -306,3 +310,12 @@ export default defineComponent({
     }
 })
 </script>
+
+<style lang="scss">
+    .test-card {
+        width: 70%;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        white-space: nowrap;
+    }
+</style>

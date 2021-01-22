@@ -82,11 +82,11 @@ export default defineTemplate({
             let modeText = mode === 'greater' ? '>=' : mode
             return `在 ${timeout} 毫秒內輪詢 ${selector} ${target}${selector === 'query' ? '(' + index + ')' : ''} ${modeText} ${value}`
         },
-        validate({ timeout, target, index }) {
+        validate({ selector, timeout, target, index }) {
             if (isNaN(Number(timeout))) {
                 return '超時時間必須為數字'
             }
-            if (target === '') {
+            if (selector !== 'URL' && target === '') {
                 return '目標不存在'
             }
             if (isNaN(Number(index))) {
