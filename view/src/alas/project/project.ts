@@ -148,10 +148,13 @@ export const Options: IModelOptions<Model, List> = {
                 params,
                 capabilities: {
                     browserName: self.browserOption.target,
+                    marionette: true,
+                    acceptInsecureCerts: true,
                     chromeOptions: {
                         args: [
-                            `--window-size=${self.browserOption.width},${self.browserOption.height}`,
+                            '-ignore-certificate-errors',
                             self.browserOption.openConsole ? '--auto-open-devtools-for-tabs' : null,
+                            `--window-size=${self.browserOption.width},${self.browserOption.height}`,
                             `--window-position=${self.browserOption.posX},${self.browserOption.posY}`
                         ].filter(e => !!e)
                     }
