@@ -1,6 +1,9 @@
-<p align="center"><img src="https://github.com/KHC-ZhiHao/web-e2e-gui/raw/master/images/logo.png"></p>
+<br>
 
-<p align="center" style="font-size:2em">可介面操作 E2E 測試工具</p>
+<p align="center"><img src="./logo.png"></p>
+
+<p align="center" style="font-size:2em">WEB E2E GUI</p>
+<h3 align="center">可介面操作 E2E 測試工具</h3>
 
 <br>
 
