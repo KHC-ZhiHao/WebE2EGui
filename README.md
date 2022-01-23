@@ -5,6 +5,12 @@
 <p align="center" style="font-size:2em">WEB E2E GUI</p>
 <h3 align="center">可介面操作 E2E 測試工具</h3>
 
+<p align="center">
+    <a href="https://www.npmjs.com/package/web-e2e-gui"><img src="https://img.shields.io/npm/v/web-e2e-gui.svg"></a>
+    <a href="https://github.com/KHC-ZhiHao/WebE2EGui"><img src="https://img.shields.io/github/stars/KHC-ZhiHao/WebE2EGui.svg?style=social"></a>
+    <br>
+</p>
+
 <br>
 
 ## Table Of Contents
